@@ -13,7 +13,7 @@ return {
 				autotag = {
 					enable = true,
 				},
-				ensure_installed = { "lua", "javascript", "go" },
+				ensure_installed = { "lua", "javascript", "go", "rescript" },
 				highlight = { enable = true },
 				indent = { enable = true },
 			})

@@ -13,12 +13,8 @@ o.hlsearch = true
 vim.keymap.set("n", "<CR>", "<CMD>nohlsearch<CR>")
 
 -- maps --
-
 -- quit
 vim.keymap.set("n", "<leader>q", "<CMD>q<CR>")
-
--- save
-vim.keymap.set("n", "<leader>w", "<CMD>update<CR>")
 
 -- exit insert mode
 vim.keymap.set("i", "jj", "<ESC>")
@@ -44,3 +40,7 @@ vim.keymap.set("n", "<C-Left>", "<C-w><")
 vim.keymap.set("n", "<C-Right>", "<C-w>>")
 vim.keymap.set("n", "<C-Up>", "<C-w>+")
 vim.keymap.set("n", "<C-Down>", "<C-w>-")
+
+-- cursor
+vim.keymap.set("i", "oo", "<Esc>o", { noremap = true, silent = true })
+vim.keymap.set("i", "OO", "<Esc>O", { noremap = true, silent = true })

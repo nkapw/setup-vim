@@ -60,6 +60,10 @@ return {
 				on_attach = on_attach,
 				capabilities = capabilities,
 			})
+			lspconfig.rust_analyzer.setup({
+				on_attach = on_attach,
+				capabilities = capabilities,
+			})
 			vim.keymap.set({ "n", "i" }, ",;", vim.lsp.buf.hover, {})
 			-- Auto-hover on CursorHold
 			-- vim.api.nvim_create_autocmd("CursorHoldI", {
@@ -80,6 +84,7 @@ return {
 			end
 			vim.keymap.set("n", "<Esc>", close_hover_window, { noremap = true, silent = true })
 			vim.opt.updatetime = 300 -- Time in milliseconds
+			vim.keymap.set("n", "gi", vim.lsp.buf.implementation, {})
 			vim.keymap.set("n", "gd", vim.lsp.buf.definition, {})
 			vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, {})
 			vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, {})

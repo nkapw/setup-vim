@@ -42,6 +42,19 @@ return {
 			})
 			lspconfig.gopls.setup({
 				capabilities = capabilities,
+				settings = {
+					gopls = {
+						hints = {
+							assignVariableTypes = true,
+							compositeLiteralFields = true,
+							compositeLiteralTypes = true,
+							constantValues = true,
+							functionTypeParameters = true,
+							parameterNames = true,
+							rangeVariableTypes = true,
+						},
+					},
+				},
 			})
 			lspconfig.rescriptls.setup({
 				on_attach = on_attach,
@@ -51,16 +64,15 @@ return {
 				on_attach = on_attach,
 				capabilities = capabilities,
 			})
-			--[[		lspconfig.ast_grep.setup({
-				on_attach = on_attach,
-				capabilities = capabilities,
-			})]]
-			--
 			lspconfig.clangd.setup({
 				on_attach = on_attach,
 				capabilities = capabilities,
 			})
 			lspconfig.rust_analyzer.setup({
+				on_attach = on_attach,
+				capabilities = capabilities,
+			})
+			lspconfig.zls.setup({
 				on_attach = on_attach,
 				capabilities = capabilities,
 			})

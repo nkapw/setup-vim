@@ -21,6 +21,10 @@ return {
 					end,
 				},
 			})
+            vim.keymap.set("n", "gb", "<CMD>BufferLinePick<CR>")
+            vim.keymap.set("n", "gD", "<CMD>BufferLinePickClose<CR>")
+            vim.keymap.set("n", "[b", "<CMD>BufferLineCycleNext<CR>")
+            vim.keymap.set("n", "b]", "<CMD>BufferLineCyclePrev<CR>")
 		end,
 	},
 }

@@ -8,6 +8,11 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 map("n", ";", ":")
+map("n", "<CR>", "<CMD>nohlsearch<CR>")
+
+map({ "n", "x", "o" }, "<leader>y", '"+y', { desc = "Copy to clipboard" })
+map({ "n", "x", "o" }, "<leader>p", '"+p', { desc = "Paste clipboard text" })
+
 -- Mode Normal
 -- Navigasi window
 map("n", "<C-h>", "<C-w>h", { desc = "Pindah ke window kiri" })
@@ -37,4 +42,3 @@ map("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", { desc = "Cari Bantuan" }
 -- Pindahkan baris yang dipilih ke atas/bawah
 map("v", "J", ":m '>+1<CR>gv=gv", { desc = "Pindahkan ke bawah" })
 map("v", "K", ":m '<-2<CR>gv=gv", { desc = "Pindahkan ke atas" })
-

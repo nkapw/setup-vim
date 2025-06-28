@@ -1,60 +1,71 @@
--- File: lua/plugins/lsp.lua
+-- File: lua/plugins/lsp.lua (TANPA neovim/nvim-lspconfig DAN TANPA cmp-nvim-lsp)
 
 return {
-  {
-    "williamboman/mason.nvim",
-    config = true, -- Mengaktifkan konfigurasi default Mason
-  },
-  {
-    "williamboman/mason-lspconfig.nvim",
-    -- Tidak perlu konfigurasi di sini, ini hanya penghubung
-  },
-  {
-    "neovim/nvim-lspconfig",
-    dependencies = {
-      "nvimdev/lspsaga.nvim",
-      "williamboman/mason-lspconfig.nvim",
-      "hrsh7th/cmp-nvim-lsp", -- Untuk capabilities
-    },
-    config = function()
-      local mason_lspconfig = require("mason-lspconfig")
-      local lspconfig = require("lspconfig") -- Diperlukan untuk mengakses setup()
-      local capabilities = require("cmp_nvim_lsp").default_capabilities()
+	{
+		"williamboman/mason.nvim",
+		config = true,
+	},
+	{
+		"williamboman/mason-lspconfig.nvim",
+		config = function()
+			require("mason-lspconfig").setup({
+				ensure_installed = {
+					"lua_ls",
+					"ts_ls",
+					"gopls",
+					"pyright",
+					"rust_analyzer",
+				},
+				automatic_installation = true,
+			})
+		end,
+	},
+	{
+		-- hrsh7th/cmp-nvim-lsp tidak lagi diperlukan.
+		-- Jika plugin ini hanya ada di sini untuk default_capabilities, itu tidak lagi dibutuhkan.
+		-- Jika ada alasan lain Anda menggunakannya (misalnya, integrasi kustom), Anda bisa mengembalikannya,
+		-- tetapi untuk tujuan capabilities, blink.cmp sudah menanganinya.
+		"nvim-lua/plenary.nvim", -- Plenary tetap sebagai dependency umum
+		lazy = false,
+		config = function()
+			-- **PERBAIKAN:** Menggunakan blink.cmp.get_lsp_capabilities() untuk capabilities
+			-- Ini akan mencakup kemampuan LSP bawaan dan yang disediakan oleh blink.cmp
+			local capabilities = require("blink.cmp").get_lsp_capabilities({})
 
-      -- Muat autocmd LSP yang telah dipisahkan (mengandung on_attach dan keymaps)
-      require("core.autocmds")
+			local on_attach = require("core.autocmds").on_attach
 
-      -- Setup Mason untuk mengelola instalasi server
-      mason_lspconfig.setup({
-        -- Daftar server yang ingin diinstal Mason secara otomatis
-        ensure_installed = {
-          "lua_ls",
-          "tsserver", -- Dikoreksi: ini adalah nama yang digunakan oleh Mason untuk TypeScript
-          "gopls",
-          "pyright",
-          "rust_analyzer", -- Dikoreksi: ini adalah nama yang digunakan oleh Mason untuk Rust
-        },
-        automatic_installation = true,
+			local setup_server = function(server_name)
+				local server_config = {}
+				local status_ok, loaded_config = pcall(require, "lsp." .. server_name)
+				if status_ok and type(loaded_config) == "table" then
+					server_config = loaded_config
+				end
 
-        -- Gunakan setup_handlers untuk mengintegrasikan nvim-lspconfig
-        -- Ini akan memanggil lspconfig.<server_name>.setup() untuk setiap server yang diinstal Mason.
-        -- nvim-lspconfig secara otomatis akan memuat konfigurasi dari lua/lsp/<server_name>.lua
-        -- dan menggabungkannya dengan default, serta menambahkan 'capabilities' dan on_attach.
-        handlers = {
-          function(server_name)
-            lspconfig[server_name].setup({
-              capabilities = capabilities,
-              -- on_attach tidak perlu diteruskan di sini karena sudah ditangani autocmd LspAttach
-              -- Namun, jika Anda memiliki server yang memerlukan on_attach kustom, Anda bisa menimpa handler ini
-            })
-          end,
-        },
-      })
+				local merged_config = vim.tbl_deep_extend("force", server_config, {
+					capabilities = capabilities,
+					on_attach = on_attach,
+				})
 
-      -- Aktifkan secara eksplisit Language Server yang Anda inginkan
-      -- Neovim akan secara otomatis menemukan konfigurasi di lua/lsp/<nama_server>.lua
-      -- dan menggabungkannya dengan apa yang disediakan lspconfig.
-      vim.lsp.enable({"lua_ls", "tsserver", "gopls", "pyright", "rust_analyzer"})
-    end,
-  },
+				vim.lsp.config[server_name] = merged_config
+			end
+
+			setup_server("lua_ls")
+			setup_server("tsserver")
+			setup_server("gopls")
+			setup_server("pyright")
+			setup_server("rust_analyzer")
+
+			vim.diagnostic.config({
+				virtual_text = true,
+				underline = true,
+			})
+			vim.lsp.enable({
+				"lua_ls",
+				"tsserver",
+				"gopls",
+				"pyright",
+				"rust_analyzer",
+			})
+		end,
+	},
 }

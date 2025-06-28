@@ -1,30 +1,27 @@
-return {
-	{
-		"akinsho/bufferline.nvim",
-		version = "*",
-		dependencies = "nvim-tree/nvim-web-devicons",
-		config = function()
-			require("bufferline").setup({
-				options = {
-					indicator = {
-						-- style = "underline",
-					},
-					separator_style = "slant",
-					diagnostics = "nvim_lsp",
-					diagnostics_indicator = function(count, level, diagnostics_dict, context)
-						local icon = level:match("error") and " " or " "
-						if context.buffer:current() then
-							return "" .. icon .. count
-						end
+-- File: lua/plugins/bufferline.lua
+-- Konfigurasi Bufferline (tab)
 
-						return "" .. icon .. count
-					end,
-				},
-			})
-            vim.keymap.set("n", "gb", "<CMD>BufferLinePick<CR>")
-            vim.keymap.set("n", "gD", "<CMD>BufferLinePickClose<CR>")
-            vim.keymap.set("n", "[b", "<CMD>BufferLineCycleNext<CR>")
-            vim.keymap.set("n", "b]", "<CMD>BufferLineCyclePrev<CR>")
-		end,
-	},
+return {
+  'akinsho/bufferline.nvim',
+  version = "*",
+  dependencies = 'nvim-tree/nvim-web-devicons',
+  config = function()
+    require("bufferline").setup({
+      options = {
+        mode = "buffers", -- bisa juga 'tabs'
+        separator_style = "slant",
+        diagnostics = "nvim_lsp",
+        show_buffer_close_icons = true,
+        show_close_icon = true,
+        offsets = {
+          {
+            filetype = "NvimTree",
+            text = "File Explorer",
+            text_align = "left",
+            separator = true
+          }
+        }
+      }
+    })
+  end
 }

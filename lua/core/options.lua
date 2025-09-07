@@ -1,43 +1,32 @@
--- File: lua/core/options.lua
--- Pengaturan editor Neovim global
+-- File: ~/.config/nvim/lua/core/options.lua
 
-local opt = vim.opt -- untuk penulisan yang lebih singkat
+local opt = vim.opt
 
--- Tampilan
-opt.number = true -- Tampilkan nomor baris
-opt.relativenumber = true -- Tampilkan nomor baris relatif
-opt.termguicolors = true -- Aktifkan warna 24-bit
-opt.signcolumn = "yes" -- Selalu tampilkan sign column agar tidak bergeser
-opt.wrap = false -- Jangan wrap baris
+-- Tampilan & UI
+opt.termguicolors = true
+opt.number = true
+opt.relativenumber = true
+opt.signcolumn = "yes"
+opt.scrolloff = 0
+opt.cursorline = true
+opt.winbar = "%{%v:lua.require('core.utils').get_full_winbar()%}"
 
 -- Indentasi
-opt.tabstop = 4 -- Lebar tab 4 spasi
-opt.softtabstop = 4 -- Lebar soft tab 4 spasi
-opt.shiftwidth = 4 -- Lebar shift 4 spasi
-opt.expandtab = true -- Gunakan spasi, bukan karakter tab
-opt.autoindent = true -- Indentasi otomatis
-opt.smartindent = true -- Indentasi cerdas
+opt.tabstop = 4
+opt.softtabstop = 4
+opt.shiftwidth = 4
+opt.expandtab = true
+opt.autoindent = true
+opt.smartindent = true
 
 -- Pencarian
-opt.ignorecase = true -- Abaikan case saat mencari
-opt.smartcase = true -- Gunakan case-sensitive jika ada huruf besar
-opt.incsearch = true -- Tampilkan hasil pencarian saat mengetik
-opt.hlsearch = true -- Jangan highlight semua hasil pencarian
+opt.ignorecase = true
+opt.smartcase = true
 
 -- Perilaku Editor
-opt.scrolloff = 8 -- Jaga kursor 8 baris dari tepi atas/bawah
-opt.sidescrolloff = 8 -- Jaga kursor 8 kolom dari tepi samping
-opt.undofile = true -- Simpan history undo ke file
-opt.mouse = "a" -- Aktifkan mouse di semua mode
-opt.clipboard = "unnamedplus" -- Gunakan clipboard sistem
-opt.splitright = true -- Buka vertical split ke kanan
-opt.splitbelow = true -- Buka horizontal split ke bawah
-opt.updatetime = 250 -- Waktu update untuk kursor (penting untuk plugin)
-
--- Backup dan Swap
-opt.swapfile = false
-opt.backup = false
-opt.writebackup = false
-
--- kursor
-opt.cursorline = true
+opt.wrap = true
+opt.undofile = true
+opt.mouse = "a"
+opt.clipboard = "unnamedplus"
+opt.splitright = true
+opt.splitbelow = true

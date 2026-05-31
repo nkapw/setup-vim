@@ -135,6 +135,32 @@ vim.diagnostic.config({
 -- clear search highlights with <Esc>
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
+-- keluar dari insert mode dengan menekan "jk" berurutan
+vim.keymap.set("i", "jk", "<Esc>", { desc = "Keluar insert mode" })
+
+-- gunakan ; untuk masuk command mode (tanpa perlu shift untuk :)
+vim.keymap.set({ "n", "v" }, ";", ":", { desc = "Command mode" })
+
+-- INFO: window management
+-- navigasi antar window dengan Ctrl + h/j/k/l (kiri/bawah/atas/kanan)
+vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Pindah window kiri" })
+vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Pindah window bawah" })
+vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Pindah window atas" })
+vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Pindah window kanan" })
+
+-- split window
+vim.keymap.set("n", "<leader>wv", "<C-w>v", { desc = "[W]indow split [V]ertikal" })
+vim.keymap.set("n", "<leader>ws", "<C-w>s", { desc = "[W]indow [S]plit horizontal" })
+vim.keymap.set("n", "<leader>wc", "<C-w>c", { desc = "[W]indow tutup ([C]lose)" })
+vim.keymap.set("n", "<leader>wo", "<C-w>o", { desc = "[W]indow [O]nly (tutup lainnya)" })
+vim.keymap.set("n", "<leader>w=", "<C-w>=", { desc = "[W]indow samakan ukuran" })
+
+-- resize window dengan Ctrl + panah
+vim.keymap.set("n", "<C-Up>", "<cmd>resize +2<CR>", { desc = "Perbesar tinggi window" })
+vim.keymap.set("n", "<C-Down>", "<cmd>resize -2<CR>", { desc = "Perkecil tinggi window" })
+vim.keymap.set("n", "<C-Left>", "<cmd>vertical resize -2<CR>", { desc = "Perkecil lebar window" })
+vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize +2<CR>", { desc = "Perbesar lebar window" })
+
 -- INFO: plugins
 -- we install plugins with neovim's builtin package manager: vim.pack
 -- and then enable/configure them by calling their setup functions.
@@ -275,7 +301,7 @@ local function on_attach(_, bufnr)
 	map("n", "gD", vim.lsp.buf.declaration, opts("LSP: [G]o to [D]eclaration"))
 	map("n", "gr", vim.lsp.buf.references, opts("LSP: [G]o to [R]eferences"))
 	map("n", "gi", vim.lsp.buf.implementation, opts("LSP: [G]o to [I]mplementation"))
-	map("n", "gf", vim.lsp.buf.format, opts("LSP: [G]o [F]ormat"))
+	map("n", "<leader>cf", vim.lsp.buf.format, opts("LSP: [C]ode [F]ormat"))
 	map("n", "K", vim.lsp.buf.hover, opts("LSP: Hover Documentation"))
 	map("n", "<leader>rn", vim.lsp.buf.rename, opts("LSP: [R]e[n]ame"))
 	map("n", "<leader>ca", vim.lsp.buf.code_action, opts("LSP: [C]ode [A]ction"))
@@ -319,15 +345,15 @@ require("telescope").setup({})
 
 local pickers = require("telescope.builtin")
 
-vim.keymap.set("n", "<leader>fp", pickers.builtin, { desc = "[S]earch Builtin [P]ickers" })
-vim.keymap.set("n", "<leader>fb", pickers.buffers, { desc = "[S]earch [B]uffers" })
-vim.keymap.set("n", "<leader>ff", pickers.find_files, { desc = "[S]earch [F]iles" })
-vim.keymap.set("n", "<leader>fw", pickers.grep_string, { desc = "[S]earch Current [W]ord" })
-vim.keymap.set("n", "<leader>fg", pickers.live_grep, { desc = "[S]earch by [G]rep" })
-vim.keymap.set("n", "<leader>fr", pickers.resume, { desc = "[S]earch [R]esume" })
+vim.keymap.set("n", "<leader>fp", pickers.builtin, { desc = "[F]ind Builtin [P]ickers" })
+vim.keymap.set("n", "<leader>fb", pickers.buffers, { desc = "[F]ind [B]uffers" })
+vim.keymap.set("n", "<leader>ff", pickers.find_files, { desc = "[F]ind [F]iles" })
+vim.keymap.set("n", "<leader>fw", pickers.grep_string, { desc = "[F]ind Current [W]ord" })
+vim.keymap.set("n", "<leader>fg", pickers.live_grep, { desc = "[F]ind by [G]rep" })
+vim.keymap.set("n", "<leader>fr", pickers.resume, { desc = "[F]ind [R]esume" })
 
-vim.keymap.set("n", "<leader>fh", pickers.help_tags, { desc = "[S]earch [H]elp" })
-vim.keymap.set("n", "<leader>fm", pickers.man_pages, { desc = "[S]earch [M]anuals" })
+vim.keymap.set("n", "<leader>fh", pickers.help_tags, { desc = "[F]ind [H]elp" })
+vim.keymap.set("n", "<leader>fm", pickers.man_pages, { desc = "[F]ind [M]anuals" })
 
 -- INFO: better statusline
 vim.pack.add({ "https://github.com/nvim-lualine/lualine.nvim" }, { confirm = false })
@@ -344,7 +370,9 @@ vim.pack.add({ "https://github.com/folke/which-key.nvim" }, { confirm = false })
 
 require("which-key").setup({
 	spec = {
-		{ "<leader>s", group = "[S]earch", icon = { icon = "", color = "green" } },
+		{ "<leader>w", group = "[W]indow" },
+		{ "<leader>c", group = "[C]ode" },
+		{ "<leader>f", group = "[F]ind", icon = { icon = "", color = "green" } },
 	},
 })
 
@@ -366,8 +394,7 @@ vim.pack.add({
 })
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
-vim.opt.termguicolors = true
-vim.keymap.set("n", "<leader>e", vim.cmd.NvimTreeToggle)
+vim.keymap.set("n", "<leader>e", vim.cmd.NvimTreeToggle, { desc = "Toggle file [E]xplorer" })
 require("nvim-tree").setup({
 	view = {
 		adaptive_size = true,
@@ -386,7 +413,7 @@ vim.pack.add({
 require("conform").setup({
 	format_on_save = {
 		timeout_ms = 500,
-		lsp_fallback = true,
+		lsp_format = "fallback",
 	},
 	formatters_by_ft = {
 		lua = { "stylua" },
@@ -406,5 +433,36 @@ vim.pack.add({
 require("gitsigns").setup({
 	current_line_blame = true,
 })
+
+-- INFO terminal melayang/split
+vim.pack.add({
+	{ src = "https://github.com/akinsho/toggleterm.nvim" },
+})
+
+require("toggleterm").setup({
+	-- <C-\> untuk toggle terminal (juga aktif di insert & terminal mode)
+	open_mapping = [[<c-\>]],
+	insert_mappings = true,
+	terminal_mappings = true,
+	-- terminal mengikuti direktori kerja neovim saat dibuka
+	autochdir = true,
+	hide_numbers = true,
+	start_in_insert = true,
+	direction = "horizontal",
+	-- tinggi terminal saat split horizontal (jumlah baris)
+	size = 15,
+	close_on_exit = true,
+	float_opts = {
+		border = "curved",
+		winblend = 3,
+	},
+})
+
+-- keymap navigasi: keluar dari terminal mode & pindah antar window dari terminal
+vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], { desc = "Keluar terminal mode" })
+vim.keymap.set("t", "<C-h>", [[<Cmd>wincmd h<CR>]], { desc = "Window kiri" })
+vim.keymap.set("t", "<C-j>", [[<Cmd>wincmd j<CR>]], { desc = "Window bawah" })
+vim.keymap.set("t", "<C-k>", [[<Cmd>wincmd k<CR>]], { desc = "Window atas" })
+vim.keymap.set("t", "<C-l>", [[<Cmd>wincmd l<CR>]], { desc = "Window kanan" })
 -- uncomment to enable automatic plugin updates
 -- vim.pack.update()

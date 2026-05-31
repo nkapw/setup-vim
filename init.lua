@@ -1,286 +1,197 @@
--- INFO: introduction
--- this is a minimal neovim configuration written in lua. this is not meant to
--- be a distribution, but rather a template for you to build upon and/or a
--- reference for how to configure neovim using lua in the latest version.
---
--- TUTOR:
--- if you're completely new to neovim and/or vim, consider going through
--- `:Tutor` inside neovim to get a basic idea of how it works.
---     if you don't know what this means, type the following:
---       - <escape key>
---       - :
---       - Tutor
---       - <enter key>
---
--- LUA:
--- some level of familiarity with lua/programming languages are also expected.
--- if you're new to lua, consider going through the official reference:
---    https://www.lua.org/manual
--- or a more friendly tutorial like:
---    https://learnxinyminutes.com/docs/lua/
--- you can also check out `:h lua-guide` inside neovim for a neovim-specific
--- lua guide.
---
--- DEPENDENCIES:
--- this configuration assumes you have the following tools installed on your
--- system:
---    `git` - for vim builtin package manager. (see `:h vim.pack`)
---    `ripgrep` - for fuzzy finding
---    clipboard tool: xclip/xsel/win32yank - for clipboard sharing between OS and neovim (see `h: clipboard-tool`)
---    a nerdfont (ensure the terminal running neovim is using it)
--- run `:checkhealth` inside neovim to see if your system is missing anything.
---
--- MINIMAL:
--- to say that something is 'minimal' you have to define what variable you're
--- minimizing. this configuration minimizes for lines of code and concepts.
--- to some, this configuration may have too many plugins. for example, using
--- mason.nvim to manage lsp servers will be an unnecessary dependency if the
--- user is already familiar with lsps and is comfortable managing them through
--- their OS package manager. but to someone that isn't familiar with lsp servers
--- this approach wouldn't cover everything needed to have the 'minimum' necessary
--- for lsp + completion + fuzzy finding. to some, fuzzy finding is also a bloated
--- dependency.
--- this configuration is only a starting point/reference. it is expected that
--- the user will change the configuration to suit their needs.
+-- ============================================================
+-- NEOVIM CONFIGURATION
+-- ============================================================
+-- Manajer plugin : vim.pack (builtin, lihat :h vim.pack)
+-- Dependensi     : git, ripgrep, xclip/xsel, nerd font
+-- Cek kesehatan  : :checkhealth
+-- ============================================================
 
--- INFO: options
--- these change the default neovim behaviours using the 'vim.opt' API.
--- see `:h vim.opt` for more details.
--- run `:h '{option_name}'` to see what they do and what values they can take.
--- for example, `:h 'number'` for `vim.opt.number`.
+-- ============================================================
+-- OPTIONS
+-- ============================================================
 
--- set <space> as the leader key
--- must happen before plugins are loaded (otherwise wrong leader will be used)
-vim.g.mapleader = " "
+-- leader key harus di-set sebelum plugin dimuat
+vim.g.mapleader      = " "
 vim.g.maplocalleader = " "
 
--- enable true color support
-vim.opt.termguicolors = true
+-- >> Tampilan
+vim.opt.termguicolors  = true              -- true color support
+vim.opt.number         = true              -- nomor baris absolut
+vim.opt.relativenumber = true              -- nomor baris relatif (bantu navigasi hjkl)
+vim.opt.cursorline     = true              -- highlight baris aktif
+vim.opt.showmode       = false             -- mode sudah tampil di statusline
+vim.opt.signcolumn     = "yes"             -- kolom tanda (git, diagnostik) selalu tampil
+vim.opt.list           = true              -- tampilkan karakter whitespace
+vim.opt.listchars      = { tab = "» ", trail = "·", nbsp = "␣" }
+vim.opt.wrap           = true              -- bungkus baris yang melebihi lebar layar
 
--- make line numbers default
-vim.opt.number = true
-vim.opt.relativenumber = true
+-- >> Perilaku editor
+vim.opt.mouse       = "a"                  -- aktifkan mouse (resize split, klik dll)
+vim.opt.clipboard   = "unnamedplus"        -- sinkron clipboard OS ↔ neovim
+vim.opt.breakindent = true                 -- indent ikut saat baris dibungkus
+vim.opt.undofile    = true                 -- simpan riwayat undo antar sesi
+vim.opt.updatetime  = 250                  -- delay sebelum CursorHold event (ms)
+vim.opt.timeoutlen  = 300                  -- delay tunggu sequence keymap (ms)
+vim.opt.inccommand  = "split"              -- preview substitusi :%s secara live
 
--- enable mouse mode, can be useful for resizing splits for example!
-vim.opt.mouse = "a"
+-- >> Split window
+vim.opt.splitright = true                  -- split vertikal: panel baru ke kanan
+vim.opt.splitbelow = true                  -- split horizontal: panel baru ke bawah
 
--- don't show the mode, since it's already in the status line
-vim.opt.showmode = false
+-- >> Pencarian
+vim.opt.ignorecase = true                  -- pencarian tidak case-sensitive...
+vim.opt.smartcase  = true                  -- ...kecuali ada huruf kapital
+vim.opt.hlsearch   = true                  -- highlight semua hasil pencarian
 
--- sync clipboard between OS and Neovim.
---  remove this option if you want your OS clipboard to remain independent.
---  see `:help 'clipboard'`
-vim.opt.clipboard = "unnamedplus"
+-- >> Indentasi & formatting
+vim.opt.tabstop    = 2                     -- lebar tampilan tab = 2 spasi
+vim.opt.shiftwidth = 2                     -- lebar indent (>> / <<) = 2 spasi
+vim.opt.expandtab  = true                  -- konversi tab → spasi otomatis
+vim.opt.textwidth  = 80                    -- batas lebar teks (untuk gq dll)
 
--- enable break indent
-vim.opt.breakindent = true
-
--- save undo history
-vim.opt.undofile = true
-
--- case-insensitive searching UNLESS \C or one or more capital letters in the search term
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
-
--- keep signcolumn on by default
-vim.opt.signcolumn = "yes"
-
--- decrease update time
-vim.opt.updatetime = 250
-
--- decrease mapped sequence wait time
--- displays which-key popup sooner
-vim.opt.timeoutlen = 300
-
--- configure how new splits should be opened
-vim.opt.splitright = true
-vim.opt.splitbelow = true
-
--- sets how neovim will display certain whitespace characters in the editor.
---  See `:help 'list'`
---  and `:help 'listchars'`
-vim.opt.list = true
-vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
-
--- preview substitutions live, as you type!
-vim.opt.inccommand = "split"
-
--- show which line your cursor is on
-vim.opt.cursorline = true
-
--- set highlight on search, but clear on pressing <Esc> in normal mode
-vim.opt.hlsearch = true
-
--- enable line wrapping
-vim.opt.wrap = true
-
--- formatting
-vim.opt.tabstop = 2
-vim.opt.shiftwidth = 2
-vim.opt.expandtab = true
-vim.opt.textwidth = 80
-
+-- >> Diagnostik LSP
+-- ikon tiap severity membutuhkan nerd font di terminal
 vim.diagnostic.config({
+	virtual_text = true,
 	signs = {
 		text = {
-			[vim.diagnostic.severity.ERROR] = " ",
-			[vim.diagnostic.severity.WARN] = " ",
-			[vim.diagnostic.severity.INFO] = " ",
-			[vim.diagnostic.severity.HINT] = " ",
+			[vim.diagnostic.severity.ERROR] = " ",
+			[vim.diagnostic.severity.WARN]  = " ",
+			[vim.diagnostic.severity.INFO]  = " ",
+			[vim.diagnostic.severity.HINT]  = " ",
 		},
 	},
-	virtual_text = true, -- show inline diagnostics
 })
 
--- clear search highlights with <Esc>
-vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
+-- ============================================================
+-- KEYMAPS (umum, non-plugin)
+-- ============================================================
+-- Catatan: keymap khusus plugin didefinisikan di blok plugin masing-masing.
 
--- keluar dari insert mode dengan menekan "jk" berurutan
-vim.keymap.set("i", "jk", "<Esc>", { desc = "Keluar insert mode" })
+-- >> General
+vim.keymap.set("n", "<Esc>",        "<cmd>nohlsearch<CR>", { desc = "Hapus highlight pencarian" })
+vim.keymap.set("i", "jk",           "<Esc>",               { desc = "Keluar insert mode" })
+vim.keymap.set({ "n", "v" }, ";",   ":",                   { desc = "Command mode (tanpa Shift)" })
 
--- gunakan ; untuk masuk command mode (tanpa perlu shift untuk :)
-vim.keymap.set({ "n", "v" }, ";", ":", { desc = "Command mode" })
-
--- INFO: window management
--- navigasi antar window dengan Ctrl + h/j/k/l (kiri/bawah/atas/kanan)
+-- >> Window: navigasi antar panel
+-- konsisten dengan keymap terminal mode di blok toggleterm
 vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Pindah window kiri" })
 vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Pindah window bawah" })
 vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Pindah window atas" })
 vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Pindah window kanan" })
 
--- split window
-vim.keymap.set("n", "<leader>wv", "<C-w>v", { desc = "[W]indow split [V]ertikal" })
-vim.keymap.set("n", "<leader>ws", "<C-w>s", { desc = "[W]indow [S]plit horizontal" })
-vim.keymap.set("n", "<leader>wc", "<C-w>c", { desc = "[W]indow tutup ([C]lose)" })
-vim.keymap.set("n", "<leader>wo", "<C-w>o", { desc = "[W]indow [O]nly (tutup lainnya)" })
-vim.keymap.set("n", "<leader>w=", "<C-w>=", { desc = "[W]indow samakan ukuran" })
+-- >> Window: split & tutup  (prefix <leader>w, terdaftar di which-key)
+vim.keymap.set("n", "<leader>wv", "<C-w>v",  { desc = "[W]indow split [V]ertikal" })
+vim.keymap.set("n", "<leader>ws", "<C-w>s",  { desc = "[W]indow [S]plit horizontal" })
+vim.keymap.set("n", "<leader>wc", "<C-w>c",  { desc = "[W]indow [C]lose" })
+vim.keymap.set("n", "<leader>wo", "<C-w>o",  { desc = "[W]indow [O]nly (tutup lainnya)" })
+vim.keymap.set("n", "<leader>w=", "<C-w>=",  { desc = "[W]indow samakan ukuran" })
 
--- resize window dengan Ctrl + panah
-vim.keymap.set("n", "<C-Up>", "<cmd>resize +2<CR>", { desc = "Perbesar tinggi window" })
-vim.keymap.set("n", "<C-Down>", "<cmd>resize -2<CR>", { desc = "Perkecil tinggi window" })
-vim.keymap.set("n", "<C-Left>", "<cmd>vertical resize -2<CR>", { desc = "Perkecil lebar window" })
+-- >> Window: resize  (Ctrl + tombol panah)
+vim.keymap.set("n", "<C-Up>",    "<cmd>resize +2<CR>",          { desc = "Perbesar tinggi window" })
+vim.keymap.set("n", "<C-Down>",  "<cmd>resize -2<CR>",          { desc = "Perkecil tinggi window" })
+vim.keymap.set("n", "<C-Left>",  "<cmd>vertical resize -2<CR>", { desc = "Perkecil lebar window" })
 vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize +2<CR>", { desc = "Perbesar lebar window" })
 
--- INFO: plugins
--- we install plugins with neovim's builtin package manager: vim.pack
--- and then enable/configure them by calling their setup functions.
---
--- (see `:h vim.pack` for more details on how it works)
--- you can press `gx` on any of the plugin urls below to open them in your
--- browser and check out their documentation and functionality.
--- alternatively, you can run `:h {plugin-name}` to read their documentation.
---
--- plugins are then loaded and configured with a call to `setup` functions
--- provided by each plugin. this is not a rule of neovim but rather a convention
--- followed by the community.
--- these setup calls take a table as an agument and their expected contents can
--- vary wildly. refer to each plugin's documentation for details.
+-- ============================================================
+-- PLUGINS
+-- ============================================================
 
--- INFO: colorscheme
+-- ------------------------------------------------------------
+-- Colorscheme: catppuccin
+-- https://github.com/catppuccin/nvim
+-- ------------------------------------------------------------
 vim.cmd.colorscheme("catppuccin")
 
--- INFO: formatting and syntax highlighting
+-- ------------------------------------------------------------
+-- Syntax highlight: nvim-treesitter
+-- https://github.com/nvim-treesitter/nvim-treesitter
+-- Parsing berbasis AST untuk highlighting yang akurat & cepat.
+-- Tambah bahasa: tambahkan string ke tabel ensure_installed.
+-- ------------------------------------------------------------
 vim.pack.add({ "https://github.com/nvim-treesitter/nvim-treesitter" }, { confirm = false })
-
--- equivalent to :TSUpdate
-require("nvim-treesitter.install").update("all")
+require("nvim-treesitter.install").update("all") -- setara :TSUpdate
 
 require("nvim-treesitter").setup({
-	sync_install = true,
-
-	modules = {},
-	ignore_install = {},
-
-	ensure_installed = {
-		"lua",
-		"c",
-		"rust",
-		"go",
-	},
-
-	auto_install = true, -- autoinstall languages that are not installed yet
-
-	highlight = {
-		enable = true,
-	},
+	sync_install    = true,
+	modules         = {},
+	ignore_install  = {},
+	ensure_installed = { "lua", "c", "rust", "go" },
+	auto_install    = true,  -- install parser otomatis saat buka filetype baru
+	highlight       = { enable = true },
 })
 
--- INFO: completion engine
+-- ------------------------------------------------------------
+-- Completion: blink.cmp
+-- https://github.com/saghen/blink.cmp
+-- Engine auto-completion dengan dukungan LSP, snippet, dan fuzzy.
+-- ------------------------------------------------------------
 vim.pack.add({ "https://github.com/saghen/blink.cmp" }, { confirm = false })
 
 require("blink.cmp").setup({
 	completion = {
-		documentation = {
-			auto_show = true,
-		},
+		documentation = { auto_show = true },
 	},
-
+	fuzzy = { implementation = "lua" },
 	keymap = {
-		-- these are the default blink keymaps
-		["<C-n>"] = { "select_next", "fallback_to_mappings" },
-		["<C-p>"] = { "select_prev", "fallback_to_mappings" },
-		["<C-y>"] = { "select_and_accept", "fallback" },
-		["<C-e>"] = { "cancel", "fallback" },
-
-		["<Tab>"] = { "snippet_forward", "select_next", "fallback" },
-		["<S-Tab>"] = { "snippet_backward", "select_prev", "fallback" },
-		["<CR>"] = { "select_and_accept", "fallback" },
-		["<Esc>"] = { "cancel", "hide_documentation", "fallback" },
-
+		["<C-n>"]     = { "select_next", "fallback_to_mappings" },
+		["<C-p>"]     = { "select_prev", "fallback_to_mappings" },
+		["<C-y>"]     = { "select_and_accept", "fallback" },
+		["<C-e>"]     = { "cancel", "fallback" },
+		["<Tab>"]     = { "snippet_forward", "select_next", "fallback" },
+		["<S-Tab>"]   = { "snippet_backward", "select_prev", "fallback" },
+		["<CR>"]      = { "select_and_accept", "fallback" },
+		["<Esc>"]     = { "cancel", "hide_documentation", "fallback" },
 		["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
-
-		["<C-b>"] = { "scroll_documentation_up", "fallback" },
-		["<C-f>"] = { "scroll_documentation_down", "fallback" },
-
-		["<C-k>"] = { "show_signature", "hide_signature", "fallback" },
-	},
-
-	fuzzy = {
-		implementation = "lua",
+		["<C-b>"]     = { "scroll_documentation_up", "fallback" },
+		["<C-f>"]     = { "scroll_documentation_down", "fallback" },
+		["<C-k>"]     = { "show_signature", "hide_signature", "fallback" },
 	},
 })
 
--- INFO: lsp server installation and configuration
+-- ------------------------------------------------------------
+-- LSP: nvim-lspconfig + mason
+-- https://github.com/neovim/nvim-lspconfig
+-- https://github.com/mason-org/mason.nvim
+--
+-- Mason mengelola instalasi LSP server secara otomatis.
+-- Untuk menambah server baru: tambahkan ke tabel lsp_servers.
+-- Cek server aktif: :checkhealth vim.lsp
+-- Lihat daftar server tersedia: :h lspconfig-all
+-- ------------------------------------------------------------
+vim.pack.add({
+	"https://github.com/neovim/nvim-lspconfig",
+	"https://github.com/mason-org/mason.nvim",
+	"https://github.com/mason-org/mason-lspconfig.nvim",
+	"https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim",
+}, { confirm = false })
 
--- lsp servers we want to use and their configuration
--- see `:h lspconfig-all` for available servers and their settings
 local lsp_servers = {
 	lua_ls = {
-		-- https://luals.github.io/wiki/settings/ | `:h nvim_get_runtime_file`
+		-- referensi: https://luals.github.io/wiki/settings/
 		Lua = { workspace = { library = vim.api.nvim_get_runtime_file("lua", true) } },
 	},
 	gopls = {
-		cmd = { "gopls" },
-		filetypes = { "go", "gomod", "gowork", "gotmpl" },
+		cmd          = { "gopls" },
+		filetypes    = { "go", "gomod", "gowork", "gotmpl" },
 		root_markers = { "go.work", "go.mod", ".git" },
-		settings = {
+		settings     = {
 			gopls = {
-				gofumpt = true,
+				gofumpt     = true,
 				staticcheck = true,
 				hints = {
-					assignVariableTypes = true,
+					assignVariableTypes    = true,
 					compositeLiteralFields = true,
-					compositeLiteralTypes = true,
-					constantValues = true,
+					compositeLiteralTypes  = true,
+					constantValues         = true,
 					functionTypeParameters = true,
-					parameterNames = true,
-					rangeVariableTypes = true,
+					parameterNames         = true,
+					rangeVariableTypes     = true,
 				},
 			},
 		},
 	},
 }
-
-vim.pack.add({
-	"https://github.com/neovim/nvim-lspconfig", -- default configs for lsps
-
-	-- NOTE: if you'd rather install the lsps through your OS package manager you
-	-- can delete the next three mason-related lines and their setup calls below.
-	-- see `:h lsp-quickstart` for more details.
-	"https://github.com/mason-org/mason.nvim", -- package manager
-	"https://github.com/mason-org/mason-lspconfig.nvim", -- lspconfig bridge
-	"https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim", -- auto installer
-}, { confirm = false })
 
 require("mason").setup()
 require("mason-lspconfig").setup()
@@ -288,181 +199,189 @@ require("mason-tool-installer").setup({
 	ensure_installed = vim.tbl_keys(lsp_servers),
 })
 
--- configure each lsp server on the table
--- to check what clients are attached to the current buffer, use
--- `:checkhealth vim.lsp`. to view default lsp keybindings, use `:h lsp-defaults`.
+-- keymap LSP dipasang per-buffer saat server attach
 local function on_attach(_, bufnr)
-	local map = vim.keymap.set
-	local opts = function(desc)
-		return { buffer = bufnr, desc = desc }
-	end
+	local map  = vim.keymap.set
+	local opts = function(desc) return { buffer = bufnr, desc = desc } end
 
-	map("n", "gd", vim.lsp.buf.definition, opts("LSP: [G]o to [D]efinition"))
-	map("n", "gD", vim.lsp.buf.declaration, opts("LSP: [G]o to [D]eclaration"))
-	map("n", "gr", vim.lsp.buf.references, opts("LSP: [G]o to [R]eferences"))
+	-- navigasi kode
+	map("n", "gd", vim.lsp.buf.definition,    opts("LSP: [G]o to [D]efinition"))
+	map("n", "gD", vim.lsp.buf.declaration,   opts("LSP: [G]o to [D]eclaration"))
+	map("n", "gr", vim.lsp.buf.references,    opts("LSP: [G]o to [R]eferences"))
 	map("n", "gi", vim.lsp.buf.implementation, opts("LSP: [G]o to [I]mplementation"))
-	map("n", "<leader>cf", vim.lsp.buf.format, opts("LSP: [C]ode [F]ormat"))
-	map("n", "K", vim.lsp.buf.hover, opts("LSP: Hover Documentation"))
-	map("n", "<leader>rn", vim.lsp.buf.rename, opts("LSP: [R]e[n]ame"))
-	map("n", "<leader>ca", vim.lsp.buf.code_action, opts("LSP: [C]ode [A]ction"))
-	map("n", "<leader>ld", vim.diagnostic.open_float, opts("LSP: [L]ine [D]iagnostic"))
-	map("n", "[d", function()
-		vim.diagnostic.jump({ count = -1 })
-	end, opts("LSP: Previous [D]iagnostic"))
-	map("n", "]d", function()
-		vim.diagnostic.jump({ count = 1 })
-	end, opts("LSP: Next [D]iagnostic"))
+	map("n", "K",  vim.lsp.buf.hover,          opts("LSP: Hover dokumentasi"))
 
-	-- bonus: langsung jump ke error (bukan warning)
-	map("n", "[e", function()
-		vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR })
-	end, opts("LSP: Previous [E]rror"))
-	map("n", "]e", function()
-		vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR })
-	end, opts("LSP: Next [E]rror"))
+	-- aksi kode  (prefix <leader>c, terdaftar di which-key)
+	map("n", "<leader>cf", vim.lsp.buf.format,      opts("LSP: [C]ode [F]ormat"))
+	map("n", "<leader>rn", vim.lsp.buf.rename,      opts("LSP: [R]e[n]ame simbol"))
+	map("n", "<leader>ca", vim.lsp.buf.code_action, opts("LSP: [C]ode [A]ction"))
+
+	-- diagnostik
+	map("n", "<leader>ld", vim.diagnostic.open_float, opts("LSP: [L]ihat [D]iagnostik baris"))
+	map("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end,                                          opts("LSP: Diagnostik sebelumnya"))
+	map("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end,                                           opts("LSP: Diagnostik berikutnya"))
+	map("n", "[e", function() vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR }) end, opts("LSP: Error sebelumnya"))
+	map("n", "]e", function() vim.diagnostic.jump({ count = 1,  severity = vim.diagnostic.severity.ERROR }) end, opts("LSP: Error berikutnya"))
 end
 
 for server, config in pairs(lsp_servers) do
-	vim.lsp.config(server, {
-		settings = config,
-		on_attach = on_attach,
-	})
+	vim.lsp.config(server, { settings = config, on_attach = on_attach })
 	vim.lsp.enable(server)
 end
 
--- NOTE: if all you want is lsp + completion + highlighting, you're done.
--- the rest of the lines are just quality-of-life/appearance plugins and
--- can be removed.
-
--- INFO: fuzzy finder
+-- ------------------------------------------------------------
+-- Fuzzy finder: telescope.nvim
+-- https://github.com/nvim-telescope/telescope.nvim
+-- Pencarian file, buffer, teks, help, dll. Prefix: <leader>f
+-- ------------------------------------------------------------
 vim.pack.add({
-	"https://github.com/nvim-lua/plenary.nvim", -- library dependency
-	"https://github.com/nvim-tree/nvim-web-devicons", -- icons (nerd font)
-	"https://github.com/nvim-telescope/telescope.nvim", -- the fuzzy finder
+	"https://github.com/nvim-lua/plenary.nvim",        -- dependensi wajib
+	"https://github.com/nvim-tree/nvim-web-devicons",  -- ikon (butuh nerd font)
+	"https://github.com/nvim-telescope/telescope.nvim",
 }, { confirm = false })
 
 require("telescope").setup({})
 
 local pickers = require("telescope.builtin")
+vim.keymap.set("n", "<leader>ff", pickers.find_files,  { desc = "[F]ind [F]iles" })
+vim.keymap.set("n", "<leader>fg", pickers.live_grep,   { desc = "[F]ind by [G]rep" })
+vim.keymap.set("n", "<leader>fw", pickers.grep_string, { desc = "[F]ind current [W]ord" })
+vim.keymap.set("n", "<leader>fb", pickers.buffers,     { desc = "[F]ind [B]uffers" })
+vim.keymap.set("n", "<leader>fr", pickers.resume,      { desc = "[F]ind [R]esume" })
+vim.keymap.set("n", "<leader>fh", pickers.help_tags,   { desc = "[F]ind [H]elp" })
+vim.keymap.set("n", "<leader>fm", pickers.man_pages,   { desc = "[F]ind [M]anuals" })
+vim.keymap.set("n", "<leader>fp", pickers.builtin,     { desc = "[F]ind builtin [P]ickers" })
 
-vim.keymap.set("n", "<leader>fp", pickers.builtin, { desc = "[F]ind Builtin [P]ickers" })
-vim.keymap.set("n", "<leader>fb", pickers.buffers, { desc = "[F]ind [B]uffers" })
-vim.keymap.set("n", "<leader>ff", pickers.find_files, { desc = "[F]ind [F]iles" })
-vim.keymap.set("n", "<leader>fw", pickers.grep_string, { desc = "[F]ind Current [W]ord" })
-vim.keymap.set("n", "<leader>fg", pickers.live_grep, { desc = "[F]ind by [G]rep" })
-vim.keymap.set("n", "<leader>fr", pickers.resume, { desc = "[F]ind [R]esume" })
+-- ------------------------------------------------------------
+-- File explorer: nvim-tree
+-- https://github.com/nvim-tree/nvim-tree.lua
+-- netrw dinonaktifkan agar tidak konflik dengan nvim-tree.
+-- Harus di-set SEBELUM plugin dimuat.
+-- ------------------------------------------------------------
+vim.g.loaded_netrw       = 1
+vim.g.loaded_netrwPlugin = 1
 
-vim.keymap.set("n", "<leader>fh", pickers.help_tags, { desc = "[F]ind [H]elp" })
-vim.keymap.set("n", "<leader>fm", pickers.man_pages, { desc = "[F]ind [M]anuals" })
+vim.pack.add({ { src = "https://github.com/nvim-tree/nvim-tree.lua" } })
 
--- INFO: better statusline
+require("nvim-tree").setup({
+	view = { adaptive_size = true },        -- lebar panel menyesuaikan isi
+	update_focused_file = { enable = true }, -- highlight file aktif di tree
+	sync_root_with_cwd  = true,             -- root tree ikuti cwd neovim
+	respect_buf_cwd     = true,
+})
+
+vim.keymap.set("n", "<leader>e", vim.cmd.NvimTreeToggle, { desc = "Toggle file [E]xplorer" })
+
+-- ------------------------------------------------------------
+-- Statusline: lualine.nvim
+-- https://github.com/nvim-lualine/lualine.nvim
+-- ------------------------------------------------------------
 vim.pack.add({ "https://github.com/nvim-lualine/lualine.nvim" }, { confirm = false })
 
 require("lualine").setup({
 	options = {
-		section_separators = { left = "", right = "" },
+		section_separators   = { left = "", right = "" },
 		component_separators = { left = "", right = "" },
 	},
 })
 
--- INFO: keybinding helper
-vim.pack.add({ "https://github.com/folke/which-key.nvim" }, { confirm = false })
+-- ------------------------------------------------------------
+-- Formatter: conform.nvim
+-- https://github.com/stevearc/conform.nvim
+-- Format otomatis saat simpan file. Fallback ke LSP jika
+-- formatter eksternal tidak tersedia.
+-- Tambah formatter: pastikan binary-nya terinstall di sistem.
+-- ------------------------------------------------------------
+vim.pack.add({ { src = "https://github.com/stevearc/conform.nvim" } })
 
-require("which-key").setup({
-	spec = {
-		{ "<leader>w", group = "[W]indow" },
-		{ "<leader>c", group = "[C]ode" },
-		{ "<leader>f", group = "[F]ind", icon = { icon = "", color = "green" } },
-	},
-})
-
--- NOTE: there are many more quality-of-life plugins available and others that
--- achieve what these do. these are just our recommendations to start.
-
--- INFO: utility plugins
-vim.pack.add({
-	"https://github.com/windwp/nvim-autopairs", -- auto pairs
-	"https://github.com/folke/todo-comments.nvim", -- highlight TODO/INFO/WARN comments
-}, { confirm = false })
-
-require("nvim-autopairs").setup()
-require("todo-comments").setup()
-
--- INFO nvim-tree
-vim.pack.add({
-	{ src = "https://github.com/nvim-tree/nvim-tree.lua" },
-})
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-vim.keymap.set("n", "<leader>e", vim.cmd.NvimTreeToggle, { desc = "Toggle file [E]xplorer" })
-require("nvim-tree").setup({
-	view = {
-		adaptive_size = true,
-	},
-	update_focused_file = {
-		enable = true,
-	},
-	sync_root_with_cwd = true,
-	respect_buf_cwd = true,
-})
-
--- INFO conform for format on save
-vim.pack.add({
-	{ src = "https://github.com/stevearc/conform.nvim" },
-})
 require("conform").setup({
 	format_on_save = {
 		timeout_ms = 500,
 		lsp_format = "fallback",
 	},
 	formatters_by_ft = {
-		lua = { "stylua" },
-		json = { "jq" },
-		rust = { "rustfmt" },
-		python = { "black" },
-		go = { "goimports", "gofumpt" },
-		html = { "prettier" },
+		lua        = { "stylua" },
+		json       = { "jq" },
+		rust       = { "rustfmt" },
+		python     = { "black" },
+		go         = { "goimports", "gofumpt" },
+		html       = { "prettier" },
 		javascript = { "prettier" },
 	},
 })
 
-vim.pack.add({
-	{ src = "https://github.com/lewis6991/gitsigns.nvim" },
-})
+-- ------------------------------------------------------------
+-- Git: gitsigns.nvim
+-- https://github.com/lewis6991/gitsigns.nvim
+-- Tampilkan perubahan git di signcolumn dan blame di baris aktif.
+-- ------------------------------------------------------------
+vim.pack.add({ { src = "https://github.com/lewis6991/gitsigns.nvim" } })
 
 require("gitsigns").setup({
 	current_line_blame = true,
 })
 
--- INFO terminal melayang/split
-vim.pack.add({
-	{ src = "https://github.com/akinsho/toggleterm.nvim" },
-})
+-- ------------------------------------------------------------
+-- Terminal: toggleterm.nvim
+-- https://github.com/akinsho/toggleterm.nvim
+--
+-- Buka/tutup : <C-\>  (aktif di normal, insert, dan terminal mode)
+-- Multi terminal: ketik nomor sebelum <C-\>  → misal 2<C-\> = terminal #2
+-- Ganti direction: :ToggleTerm direction=float|vertical|horizontal
+-- Lihat semua terminal aktif: :TermSelect
+-- ------------------------------------------------------------
+vim.pack.add({ { src = "https://github.com/akinsho/toggleterm.nvim" } })
 
 require("toggleterm").setup({
-	-- <C-\> untuk toggle terminal (juga aktif di insert & terminal mode)
-	open_mapping = [[<c-\>]],
-	insert_mappings = true,
-	terminal_mappings = true,
-	-- terminal mengikuti direktori kerja neovim saat dibuka
-	autochdir = true,
-	hide_numbers = true,
-	start_in_insert = true,
-	direction = "horizontal",
-	-- tinggi terminal saat split horizontal (jumlah baris)
-	size = 15,
-	close_on_exit = true,
+	open_mapping      = [[<c-\>]],
+	insert_mappings   = true,   -- <C-\> aktif di insert mode
+	terminal_mappings = true,   -- <C-\> aktif dari dalam terminal
+	autochdir         = true,   -- terminal mengikuti cwd neovim
+	hide_numbers      = true,
+	start_in_insert   = true,
+	direction         = "horizontal",
+	size              = 15,     -- tinggi terminal (baris) untuk mode horizontal
+	close_on_exit     = true,
 	float_opts = {
-		border = "curved",
+		border   = "curved",
 		winblend = 3,
 	},
 })
 
--- keymap navigasi: keluar dari terminal mode & pindah antar window dari terminal
-vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], { desc = "Keluar terminal mode" })
-vim.keymap.set("t", "<C-h>", [[<Cmd>wincmd h<CR>]], { desc = "Window kiri" })
-vim.keymap.set("t", "<C-j>", [[<Cmd>wincmd j<CR>]], { desc = "Window bawah" })
-vim.keymap.set("t", "<C-k>", [[<Cmd>wincmd k<CR>]], { desc = "Window atas" })
-vim.keymap.set("t", "<C-l>", [[<Cmd>wincmd l<CR>]], { desc = "Window kanan" })
--- uncomment to enable automatic plugin updates
--- vim.pack.update()
+-- navigasi dari dalam terminal ke window lain tanpa keluar neovim
+vim.keymap.set("t", "<Esc>",  [[<C-\><C-n>]],        { desc = "Keluar terminal mode" })
+vim.keymap.set("t", "<C-h>",  [[<Cmd>wincmd h<CR>]], { desc = "Window kiri" })
+vim.keymap.set("t", "<C-j>",  [[<Cmd>wincmd j<CR>]], { desc = "Window bawah" })
+vim.keymap.set("t", "<C-k>",  [[<Cmd>wincmd k<CR>]], { desc = "Window atas" })
+vim.keymap.set("t", "<C-l>",  [[<Cmd>wincmd l<CR>]], { desc = "Window kanan" })
+
+-- ------------------------------------------------------------
+-- UI helpers
+-- ------------------------------------------------------------
+
+-- which-key: popup daftar keymap saat menekan prefix (<leader> dll)
+-- https://github.com/folke/which-key.nvim
+vim.pack.add({ "https://github.com/folke/which-key.nvim" }, { confirm = false })
+
+require("which-key").setup({
+	spec = {
+		{ "<leader>f", group = "[F]ind" },
+		{ "<leader>w", group = "[W]indow" },
+		{ "<leader>c", group = "[C]ode" },
+	},
+})
+
+-- autopairs: tutup bracket/quote otomatis saat mengetik
+-- https://github.com/windwp/nvim-autopairs
+--
+-- todo-comments: highlight komentar TODO / FIXME / NOTE / WARN / BUG / HACK
+-- https://github.com/folke/todo-comments.nvim
+vim.pack.add({
+	"https://github.com/windwp/nvim-autopairs",
+	"https://github.com/folke/todo-comments.nvim",
+}, { confirm = false })
+
+require("nvim-autopairs").setup()
+require("todo-comments").setup()
+
+-- vim.pack.update() -- hapus komentar untuk update semua plugin sekaligus

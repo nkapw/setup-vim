@@ -391,7 +391,7 @@ require("conform").setup({
 	formatters_by_ft = {
 		lua = { "stylua" },
 		json = { "jq" },
-		rust = { "rustfmt" },
+		-- rust = { "rustfmt" },
 		python = { "black" },
 		go = { "goimports", "gofumpt" },
 		html = { "prettier" },
@@ -399,5 +399,12 @@ require("conform").setup({
 	},
 })
 
+vim.pack.add({
+	{ src = "https://github.com/lewis6991/gitsigns.nvim" },
+})
+
+require("gitsigns").setup({
+	current_line_blame = true,
+})
 -- uncomment to enable automatic plugin updates
 -- vim.pack.update()

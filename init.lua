@@ -391,7 +391,7 @@ require("conform").setup({
 	formatters_by_ft = {
 		lua = { "stylua" },
 		json = { "jq" },
-		-- rust = { "rustfmt" },
+		rust = { "rustfmt" },
 		python = { "black" },
 		go = { "goimports", "gofumpt" },
 		html = { "prettier" },

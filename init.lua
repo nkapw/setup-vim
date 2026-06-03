@@ -170,27 +170,28 @@ vim.pack.add({
 local function on_attach(_, bufnr)
 	local map     = vim.keymap.set
 	local opts    = function(desc) return { buffer = bufnr, desc = desc } end
-	local tele    = require("telescope.builtin")
+	local fzf     = require("fzf-lua")
 
-	-- navigasi kode (via Telescope untuk tampilan picker)
-	map("n", "gd", tele.lsp_definitions,     opts("LSP: [G]o to [D]efinition"))
-	map("n", "gD", vim.lsp.buf.declaration,  opts("LSP: [G]o to [D]eclaration"))
-	map("n", "gr", tele.lsp_references,      opts("LSP: [G]o to [R]eferences"))
-	map("n", "gi", tele.lsp_implementations, opts("LSP: [G]o to [I]mplementation"))
-	map("n", "gt", tele.lsp_type_definitions, opts("LSP: [G]o to [T]ype Definition"))
-	map("n", "K",  vim.lsp.buf.hover,        opts("LSP: Hover documentation"))
+	-- navigasi kode (via fzf-lua untuk tampilan picker)
+	map("n", "gd", fzf.lsp_definitions,     opts("LSP: [G]o to [D]efinition"))
+	map("n", "gD", fzf.lsp_declarations,    opts("LSP: [G]o to [D]eclaration"))
+	map("n", "gr", fzf.lsp_references,      opts("LSP: [G]o to [R]eferences"))
+	map("n", "gi", fzf.lsp_implementations, opts("LSP: [G]o to [I]mplementation"))
+	map("n", "gt", fzf.lsp_typedefs,        opts("LSP: [G]o to [T]ype Definition"))
+	map("n", "K",  vim.lsp.buf.hover,       opts("LSP: Hover documentation"))
 
 	-- aksi kode  (prefix <leader>c, terdaftar di which-key)
 	map("n", "<leader>cf", vim.lsp.buf.format,      opts("LSP: [C]ode [F]ormat"))
 	map("n", "<leader>rn", vim.lsp.buf.rename,      opts("LSP: [R]e[n]ame symbol"))
-	map("n", "<leader>ca", vim.lsp.buf.code_action, opts("LSP: [C]ode [A]ction"))
-	map("n", "<leader>cs", tele.lsp_document_symbols,   opts("LSP: [C]ode [S]ymbols document"))
-	map("n", "<leader>cS", tele.lsp_workspace_symbols,  opts("LSP: [C]ode [S]ymbols workspace"))
-	map("n", "<leader>ci", tele.lsp_incoming_calls,     opts("LSP: [C]ode [I]ncoming calls"))
-	map("n", "<leader>co", tele.lsp_outgoing_calls,     opts("LSP: [C]ode [O]utgoing calls"))
+	map("n", "<leader>ca", fzf.lsp_code_actions,    opts("LSP: [C]ode [A]ction"))
+	map("n", "<leader>cs", fzf.lsp_document_symbols,   opts("LSP: [C]ode [S]ymbols document"))
+	map("n", "<leader>cS", fzf.lsp_workspace_symbols,  opts("LSP: [C]ode [S]ymbols workspace"))
+	map("n", "<leader>ci", fzf.lsp_incoming_calls,     opts("LSP: [C]ode [I]ncoming calls"))
+	map("n", "<leader>co", fzf.lsp_outgoing_calls,     opts("LSP: [C]ode [O]utgoing calls"))
 
 	-- diagnostik
-	map("n", "<leader>ld", tele.diagnostics,  opts("LSP: [L]ist [D]iagnostics"))
+	map("n", "<leader>ld", fzf.diagnostics_document,   opts("LSP: [L]ist [D]iagnostics (buffer)"))
+	map("n", "<leader>lD", fzf.diagnostics_workspace,  opts("LSP: [L]ist [D]iagnostics (workspace)"))
 	map("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end,                                          opts("LSP: Previous diagnostic"))
 	map("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end,                                           opts("LSP: Next diagnostic"))
 	map("n", "[e", function() vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR }) end, opts("LSP: Previous error"))
@@ -238,27 +239,27 @@ for server, config in pairs(lsp_servers) do
 end
 
 -- ------------------------------------------------------------
--- Fuzzy finder: telescope.nvim
--- https://github.com/nvim-telescope/telescope.nvim
+-- Fuzzy finder: fzf-lua
+-- https://github.com/ibhagwan/fzf-lua
 -- Pencarian file, buffer, teks, help, dll. Prefix: <leader>f
+-- Butuh binary fzf terinstall di sistem (apt/brew: fzf)
 -- ------------------------------------------------------------
 vim.pack.add({
-	"https://github.com/nvim-lua/plenary.nvim",        -- dependensi wajib
 	"https://github.com/nvim-tree/nvim-web-devicons",  -- ikon (butuh nerd font)
-	"https://github.com/nvim-telescope/telescope.nvim",
+	"https://github.com/ibhagwan/fzf-lua",
 }, { confirm = false })
 
-require("telescope").setup({})
+require("fzf-lua").setup({})
 
-local tele = require("telescope.builtin")
-vim.keymap.set("n", "<leader>ff", tele.find_files,  { desc = "[F]ind [F]iles" })
-vim.keymap.set("n", "<leader>fg", tele.live_grep,   { desc = "[F]ind by [G]rep" })
-vim.keymap.set("n", "<leader>fw", tele.grep_string, { desc = "[F]ind current [W]ord" })
-vim.keymap.set("n", "<leader>fb", tele.buffers,     { desc = "[F]ind [B]uffers" })
-vim.keymap.set("n", "<leader>fr", tele.resume,      { desc = "[F]ind [R]esume" })
-vim.keymap.set("n", "<leader>fh", tele.help_tags,   { desc = "[F]ind [H]elp" })
-vim.keymap.set("n", "<leader>fm", tele.man_pages,   { desc = "[F]ind [M]anuals" })
-vim.keymap.set("n", "<leader>fp", tele.builtin,     { desc = "[F]ind builtin [P]ickers" })
+local fzf = require("fzf-lua")
+vim.keymap.set("n", "<leader>ff", fzf.files,      { desc = "[F]ind [F]iles" })
+vim.keymap.set("n", "<leader>fg", fzf.live_grep,  { desc = "[F]ind by [G]rep" })
+vim.keymap.set("n", "<leader>fw", fzf.grep_cword, { desc = "[F]ind current [W]ord" })
+vim.keymap.set("n", "<leader>fb", fzf.buffers,    { desc = "[F]ind [B]uffers" })
+vim.keymap.set("n", "<leader>fr", fzf.resume,     { desc = "[F]ind [R]esume" })
+vim.keymap.set("n", "<leader>fh", fzf.help_tags,  { desc = "[F]ind [H]elp" })
+vim.keymap.set("n", "<leader>fm", fzf.man_pages,  { desc = "[F]ind [M]anuals" })
+vim.keymap.set("n", "<leader>fp", fzf.builtin,    { desc = "[F]ind [P]ickers" })
 
 -- ------------------------------------------------------------
 -- File explorer: nvim-tree

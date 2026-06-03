@@ -201,23 +201,29 @@ require("mason-tool-installer").setup({
 
 -- keymap LSP dipasang per-buffer saat server attach
 local function on_attach(_, bufnr)
-	local map  = vim.keymap.set
-	local opts = function(desc) return { buffer = bufnr, desc = desc } end
+	local map     = vim.keymap.set
+	local opts    = function(desc) return { buffer = bufnr, desc = desc } end
+	local tele    = require("telescope.builtin")
 
-	-- navigasi kode
-	map("n", "gd", vim.lsp.buf.definition,    opts("LSP: [G]o to [D]efinition"))
-	map("n", "gD", vim.lsp.buf.declaration,   opts("LSP: [G]o to [D]eclaration"))
-	map("n", "gr", vim.lsp.buf.references,    opts("LSP: [G]o to [R]eferences"))
-	map("n", "gi", vim.lsp.buf.implementation, opts("LSP: [G]o to [I]mplementation"))
-	map("n", "K",  vim.lsp.buf.hover,          opts("LSP: Hover dokumentasi"))
+	-- navigasi kode (via Telescope untuk tampilan picker)
+	map("n", "gd", tele.lsp_definitions,     opts("LSP: [G]o to [D]efinition"))
+	map("n", "gD", vim.lsp.buf.declaration,  opts("LSP: [G]o to [D]eclaration"))
+	map("n", "gr", tele.lsp_references,      opts("LSP: [G]o to [R]eferences"))
+	map("n", "gi", tele.lsp_implementations, opts("LSP: [G]o to [I]mplementation"))
+	map("n", "gt", tele.lsp_type_definitions, opts("LSP: [G]o to [T]ype Definition"))
+	map("n", "K",  vim.lsp.buf.hover,        opts("LSP: Hover dokumentasi"))
 
 	-- aksi kode  (prefix <leader>c, terdaftar di which-key)
 	map("n", "<leader>cf", vim.lsp.buf.format,      opts("LSP: [C]ode [F]ormat"))
 	map("n", "<leader>rn", vim.lsp.buf.rename,      opts("LSP: [R]e[n]ame simbol"))
 	map("n", "<leader>ca", vim.lsp.buf.code_action, opts("LSP: [C]ode [A]ction"))
+	map("n", "<leader>cs", tele.lsp_document_symbols,   opts("LSP: [C]ode [S]ymbols dokumen"))
+	map("n", "<leader>cS", tele.lsp_workspace_symbols,  opts("LSP: [C]ode [S]ymbols workspace"))
+	map("n", "<leader>ci", tele.lsp_incoming_calls,     opts("LSP: [C]ode [I]ncoming calls"))
+	map("n", "<leader>co", tele.lsp_outgoing_calls,     opts("LSP: [C]ode [O]utgoing calls"))
 
 	-- diagnostik
-	map("n", "<leader>ld", vim.diagnostic.open_float, opts("LSP: [L]ihat [D]iagnostik baris"))
+	map("n", "<leader>ld", tele.diagnostics,  opts("LSP: [L]ihat [D]iagnostik (Telescope)"))
 	map("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end,                                          opts("LSP: Diagnostik sebelumnya"))
 	map("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end,                                           opts("LSP: Diagnostik berikutnya"))
 	map("n", "[e", function() vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR }) end, opts("LSP: Error sebelumnya"))
@@ -368,6 +374,14 @@ require("which-key").setup({
 		{ "<leader>f", group = "[F]ind" },
 		{ "<leader>w", group = "[W]indow" },
 		{ "<leader>c", group = "[C]ode" },
+		{ "<leader>cf", desc = "LSP: [C]ode [F]ormat" },
+		{ "<leader>ca", desc = "LSP: [C]ode [A]ction" },
+		{ "<leader>cs", desc = "LSP: [C]ode [S]ymbols dokumen" },
+		{ "<leader>cS", desc = "LSP: [C]ode [S]ymbols workspace" },
+		{ "<leader>ci", desc = "LSP: [C]ode [I]ncoming calls" },
+		{ "<leader>co", desc = "LSP: [C]ode [O]utgoing calls" },
+		{ "<leader>rn", desc = "LSP: [R]e[n]ame simbol" },
+		{ "<leader>ld", desc = "LSP: [L]ihat [D]iagnostik" },
 	},
 })
 

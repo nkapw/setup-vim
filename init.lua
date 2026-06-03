@@ -166,39 +166,6 @@ vim.pack.add({
 	"https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim",
 }, { confirm = false })
 
-local lsp_servers = {
-	lua_ls = {
-		-- referensi: https://luals.github.io/wiki/settings/
-		Lua = { workspace = { library = vim.api.nvim_get_runtime_file("lua", true) } },
-	},
-	gopls = {
-		cmd          = { "gopls" },
-		filetypes    = { "go", "gomod", "gowork", "gotmpl" },
-		root_markers = { "go.work", "go.mod", ".git" },
-		settings     = {
-			gopls = {
-				gofumpt     = true,
-				staticcheck = true,
-				hints = {
-					assignVariableTypes    = true,
-					compositeLiteralFields = true,
-					compositeLiteralTypes  = true,
-					constantValues         = true,
-					functionTypeParameters = true,
-					parameterNames         = true,
-					rangeVariableTypes     = true,
-				},
-			},
-		},
-	},
-}
-
-require("mason").setup()
-require("mason-lspconfig").setup()
-require("mason-tool-installer").setup({
-	ensure_installed = vim.tbl_keys(lsp_servers),
-})
-
 -- keymap LSP dipasang per-buffer saat server attach
 local function on_attach(_, bufnr)
 	local map     = vim.keymap.set
@@ -230,8 +197,43 @@ local function on_attach(_, bufnr)
 	map("n", "]e", function() vim.diagnostic.jump({ count = 1,  severity = vim.diagnostic.severity.ERROR }) end, opts("LSP: Next error"))
 end
 
+-- tiap entry adalah vim.lsp.Config lengkap; cmd/filetypes/root_markers
+-- tidak perlu diulang jika sudah tersedia di default nvim-lspconfig
+local lsp_servers = {
+	lua_ls = {
+		-- referensi: https://luals.github.io/wiki/settings/
+		settings = {
+			Lua = { workspace = { library = vim.api.nvim_get_runtime_file("lua", true) } },
+		},
+	},
+	gopls = {
+		settings = {
+			gopls = {
+				gofumpt     = true,
+				staticcheck = true,
+				hints = {
+					assignVariableTypes    = true,
+					compositeLiteralFields = true,
+					compositeLiteralTypes  = true,
+					constantValues         = true,
+					functionTypeParameters = true,
+					parameterNames         = true,
+					rangeVariableTypes     = true,
+				},
+			},
+		},
+	},
+}
+
+require("mason").setup()
+require("mason-lspconfig").setup()
+require("mason-tool-installer").setup({
+	ensure_installed = vim.tbl_keys(lsp_servers),
+})
+
 for server, config in pairs(lsp_servers) do
-	vim.lsp.config(server, { settings = config, on_attach = on_attach })
+	config.on_attach = on_attach
+	vim.lsp.config(server, config)
 	vim.lsp.enable(server)
 end
 

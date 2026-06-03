@@ -69,29 +69,29 @@ vim.diagnostic.config({
 -- Catatan: keymap khusus plugin didefinisikan di blok plugin masing-masing.
 
 -- >> General
-vim.keymap.set("n", "<Esc>",        "<cmd>nohlsearch<CR>", { desc = "Hapus highlight pencarian" })
-vim.keymap.set("i", "jk",           "<Esc>",               { desc = "Keluar insert mode" })
-vim.keymap.set({ "n", "v" }, ";",   ":",                   { desc = "Command mode (tanpa Shift)" })
+vim.keymap.set("n", "<Esc>",        "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
+vim.keymap.set("i", "jk",           "<Esc>",               { desc = "Exit insert mode" })
+vim.keymap.set({ "n", "v" }, ";",   ":",                   { desc = "Command mode (no Shift)" })
 
 -- >> Window: navigasi antar panel
 -- konsisten dengan keymap terminal mode di blok toggleterm
-vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Pindah window kiri" })
-vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Pindah window bawah" })
-vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Pindah window atas" })
-vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Pindah window kanan" })
+vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
+vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move to bottom window" })
+vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Move to top window" })
+vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Move to right window" })
 
 -- >> Window: split & tutup  (prefix <leader>w, terdaftar di which-key)
-vim.keymap.set("n", "<leader>wv", "<C-w>v",  { desc = "[W]indow split [V]ertikal" })
+vim.keymap.set("n", "<leader>wv", "<C-w>v",  { desc = "[W]indow split [V]ertical" })
 vim.keymap.set("n", "<leader>ws", "<C-w>s",  { desc = "[W]indow [S]plit horizontal" })
 vim.keymap.set("n", "<leader>wc", "<C-w>c",  { desc = "[W]indow [C]lose" })
-vim.keymap.set("n", "<leader>wo", "<C-w>o",  { desc = "[W]indow [O]nly (tutup lainnya)" })
-vim.keymap.set("n", "<leader>w=", "<C-w>=",  { desc = "[W]indow samakan ukuran" })
+vim.keymap.set("n", "<leader>wo", "<C-w>o",  { desc = "[W]indow [O]nly (close others)" })
+vim.keymap.set("n", "<leader>w=", "<C-w>=",  { desc = "[W]indow equalize size" })
 
 -- >> Window: resize  (Ctrl + tombol panah)
-vim.keymap.set("n", "<C-Up>",    "<cmd>resize +2<CR>",          { desc = "Perbesar tinggi window" })
-vim.keymap.set("n", "<C-Down>",  "<cmd>resize -2<CR>",          { desc = "Perkecil tinggi window" })
-vim.keymap.set("n", "<C-Left>",  "<cmd>vertical resize -2<CR>", { desc = "Perkecil lebar window" })
-vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize +2<CR>", { desc = "Perbesar lebar window" })
+vim.keymap.set("n", "<C-Up>",    "<cmd>resize +2<CR>",          { desc = "Increase window height" })
+vim.keymap.set("n", "<C-Down>",  "<cmd>resize -2<CR>",          { desc = "Decrease window height" })
+vim.keymap.set("n", "<C-Left>",  "<cmd>vertical resize -2<CR>", { desc = "Decrease window width" })
+vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize +2<CR>", { desc = "Increase window width" })
 
 -- ============================================================
 -- PLUGINS
@@ -108,9 +108,9 @@ vim.cmd.colorscheme("catppuccin")
 -- https://github.com/nvim-treesitter/nvim-treesitter
 -- Parsing berbasis AST untuk highlighting yang akurat & cepat.
 -- Tambah bahasa: tambahkan string ke tabel ensure_installed.
+-- Update parser  : :TSUpdate  (jalankan manual saat dibutuhkan)
 -- ------------------------------------------------------------
 vim.pack.add({ "https://github.com/nvim-treesitter/nvim-treesitter" }, { confirm = false })
-require("nvim-treesitter.install").update("all") -- setara :TSUpdate
 
 require("nvim-treesitter").setup({
 	sync_install    = true,
@@ -211,23 +211,23 @@ local function on_attach(_, bufnr)
 	map("n", "gr", tele.lsp_references,      opts("LSP: [G]o to [R]eferences"))
 	map("n", "gi", tele.lsp_implementations, opts("LSP: [G]o to [I]mplementation"))
 	map("n", "gt", tele.lsp_type_definitions, opts("LSP: [G]o to [T]ype Definition"))
-	map("n", "K",  vim.lsp.buf.hover,        opts("LSP: Hover dokumentasi"))
+	map("n", "K",  vim.lsp.buf.hover,        opts("LSP: Hover documentation"))
 
 	-- aksi kode  (prefix <leader>c, terdaftar di which-key)
 	map("n", "<leader>cf", vim.lsp.buf.format,      opts("LSP: [C]ode [F]ormat"))
-	map("n", "<leader>rn", vim.lsp.buf.rename,      opts("LSP: [R]e[n]ame simbol"))
+	map("n", "<leader>rn", vim.lsp.buf.rename,      opts("LSP: [R]e[n]ame symbol"))
 	map("n", "<leader>ca", vim.lsp.buf.code_action, opts("LSP: [C]ode [A]ction"))
-	map("n", "<leader>cs", tele.lsp_document_symbols,   opts("LSP: [C]ode [S]ymbols dokumen"))
+	map("n", "<leader>cs", tele.lsp_document_symbols,   opts("LSP: [C]ode [S]ymbols document"))
 	map("n", "<leader>cS", tele.lsp_workspace_symbols,  opts("LSP: [C]ode [S]ymbols workspace"))
 	map("n", "<leader>ci", tele.lsp_incoming_calls,     opts("LSP: [C]ode [I]ncoming calls"))
 	map("n", "<leader>co", tele.lsp_outgoing_calls,     opts("LSP: [C]ode [O]utgoing calls"))
 
 	-- diagnostik
-	map("n", "<leader>ld", tele.diagnostics,  opts("LSP: [L]ihat [D]iagnostik (Telescope)"))
-	map("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end,                                          opts("LSP: Diagnostik sebelumnya"))
-	map("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end,                                           opts("LSP: Diagnostik berikutnya"))
-	map("n", "[e", function() vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR }) end, opts("LSP: Error sebelumnya"))
-	map("n", "]e", function() vim.diagnostic.jump({ count = 1,  severity = vim.diagnostic.severity.ERROR }) end, opts("LSP: Error berikutnya"))
+	map("n", "<leader>ld", tele.diagnostics,  opts("LSP: [L]ist [D]iagnostics"))
+	map("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end,                                          opts("LSP: Previous diagnostic"))
+	map("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end,                                           opts("LSP: Next diagnostic"))
+	map("n", "[e", function() vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR }) end, opts("LSP: Previous error"))
+	map("n", "]e", function() vim.diagnostic.jump({ count = 1,  severity = vim.diagnostic.severity.ERROR }) end, opts("LSP: Next error"))
 end
 
 for server, config in pairs(lsp_servers) do
@@ -248,15 +248,15 @@ vim.pack.add({
 
 require("telescope").setup({})
 
-local pickers = require("telescope.builtin")
-vim.keymap.set("n", "<leader>ff", pickers.find_files,  { desc = "[F]ind [F]iles" })
-vim.keymap.set("n", "<leader>fg", pickers.live_grep,   { desc = "[F]ind by [G]rep" })
-vim.keymap.set("n", "<leader>fw", pickers.grep_string, { desc = "[F]ind current [W]ord" })
-vim.keymap.set("n", "<leader>fb", pickers.buffers,     { desc = "[F]ind [B]uffers" })
-vim.keymap.set("n", "<leader>fr", pickers.resume,      { desc = "[F]ind [R]esume" })
-vim.keymap.set("n", "<leader>fh", pickers.help_tags,   { desc = "[F]ind [H]elp" })
-vim.keymap.set("n", "<leader>fm", pickers.man_pages,   { desc = "[F]ind [M]anuals" })
-vim.keymap.set("n", "<leader>fp", pickers.builtin,     { desc = "[F]ind builtin [P]ickers" })
+local tele = require("telescope.builtin")
+vim.keymap.set("n", "<leader>ff", tele.find_files,  { desc = "[F]ind [F]iles" })
+vim.keymap.set("n", "<leader>fg", tele.live_grep,   { desc = "[F]ind by [G]rep" })
+vim.keymap.set("n", "<leader>fw", tele.grep_string, { desc = "[F]ind current [W]ord" })
+vim.keymap.set("n", "<leader>fb", tele.buffers,     { desc = "[F]ind [B]uffers" })
+vim.keymap.set("n", "<leader>fr", tele.resume,      { desc = "[F]ind [R]esume" })
+vim.keymap.set("n", "<leader>fh", tele.help_tags,   { desc = "[F]ind [H]elp" })
+vim.keymap.set("n", "<leader>fm", tele.man_pages,   { desc = "[F]ind [M]anuals" })
+vim.keymap.set("n", "<leader>fp", tele.builtin,     { desc = "[F]ind builtin [P]ickers" })
 
 -- ------------------------------------------------------------
 -- File explorer: nvim-tree
@@ -276,7 +276,7 @@ require("nvim-tree").setup({
 	respect_buf_cwd     = true,
 })
 
-vim.keymap.set("n", "<leader>e", vim.cmd.NvimTreeToggle, { desc = "Toggle file [E]xplorer" })
+vim.keymap.set("n", "<leader>e", vim.cmd.NvimTreeToggle, { desc = "Toggle [E]xplorer" })
 
 -- ------------------------------------------------------------
 -- Statusline: lualine.nvim
@@ -355,11 +355,11 @@ require("toggleterm").setup({
 })
 
 -- navigasi dari dalam terminal ke window lain tanpa keluar neovim
-vim.keymap.set("t", "<Esc>",  [[<C-\><C-n>]],        { desc = "Keluar terminal mode" })
-vim.keymap.set("t", "<C-h>",  [[<Cmd>wincmd h<CR>]], { desc = "Window kiri" })
-vim.keymap.set("t", "<C-j>",  [[<Cmd>wincmd j<CR>]], { desc = "Window bawah" })
-vim.keymap.set("t", "<C-k>",  [[<Cmd>wincmd k<CR>]], { desc = "Window atas" })
-vim.keymap.set("t", "<C-l>",  [[<Cmd>wincmd l<CR>]], { desc = "Window kanan" })
+vim.keymap.set("t", "<Esc>",  [[<C-\><C-n>]],        { desc = "Exit terminal mode" })
+vim.keymap.set("t", "<C-h>",  [[<Cmd>wincmd h<CR>]], { desc = "Move to left window" })
+vim.keymap.set("t", "<C-j>",  [[<Cmd>wincmd j<CR>]], { desc = "Move to bottom window" })
+vim.keymap.set("t", "<C-k>",  [[<Cmd>wincmd k<CR>]], { desc = "Move to top window" })
+vim.keymap.set("t", "<C-l>",  [[<Cmd>wincmd l<CR>]], { desc = "Move to right window" })
 
 -- ------------------------------------------------------------
 -- UI helpers
@@ -374,14 +374,6 @@ require("which-key").setup({
 		{ "<leader>f", group = "[F]ind" },
 		{ "<leader>w", group = "[W]indow" },
 		{ "<leader>c", group = "[C]ode" },
-		{ "<leader>cf", desc = "LSP: [C]ode [F]ormat" },
-		{ "<leader>ca", desc = "LSP: [C]ode [A]ction" },
-		{ "<leader>cs", desc = "LSP: [C]ode [S]ymbols dokumen" },
-		{ "<leader>cS", desc = "LSP: [C]ode [S]ymbols workspace" },
-		{ "<leader>ci", desc = "LSP: [C]ode [I]ncoming calls" },
-		{ "<leader>co", desc = "LSP: [C]ode [O]utgoing calls" },
-		{ "<leader>rn", desc = "LSP: [R]e[n]ame simbol" },
-		{ "<leader>ld", desc = "LSP: [L]ihat [D]iagnostik" },
 	},
 })
 

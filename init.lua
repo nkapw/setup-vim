@@ -110,6 +110,21 @@ require("catppuccin").setup({
 vim.cmd.colorscheme("catppuccin")
 
 -- ------------------------------------------------------------
+-- Breadcrumbs: dropbar.nvim
+-- https://github.com/Bekaboo/dropbar.nvim
+-- Tampilkan konteks kode (file/fungsi/class) di winbar.
+-- Source: LSP, treesitter, markdown. Butuh nvim >= 0.11
+-- ------------------------------------------------------------
+vim.pack.add({ "https://github.com/Bekaboo/dropbar.nvim" }, { confirm = false })
+
+require("dropbar").setup()
+
+local dropbar = require("dropbar.api")
+vim.keymap.set("n", "<leader>.", dropbar.pick,                { desc = "Breadcrumb [.]pick" })
+vim.keymap.set("n", "[.", dropbar.goto_context_start,         { desc = "Breadcrumb [.]go to start" })
+vim.keymap.set("n", "].", dropbar.select_next_context,        { desc = "Breadcrumb [.]next context" })
+
+-- ------------------------------------------------------------
 -- Syntax highlight: nvim-treesitter
 -- https://github.com/nvim-treesitter/nvim-treesitter
 -- Parsing berbasis AST untuk highlighting yang akurat & cepat.

@@ -49,17 +49,6 @@ vim.opt.shiftwidth     = 2 -- lebar indent (>> / <<) = 2 spasi
 vim.opt.expandtab      = true -- konversi tab → spasi otomatis
 vim.opt.textwidth      = 80 -- batas lebar teks (untuk gq dll)
 
--- >> Transparent background (berlaku untuk semua colorscheme)
-vim.api.nvim_create_autocmd("ColorScheme", {
-  pattern = "*",
-  callback = function()
-    local groups = { "Normal", "NormalNC", "NormalFloat", "FloatBorder", "FloatTitle", "SignColumn" }
-    for _, g in ipairs(groups) do
-      vim.api.nvim_set_hl(0, g, { bg = "none" })
-    end
-  end,
-})
-
 -- >> Diagnostik LSP
 -- ikon tiap severity membutuhkan nerd font di terminal
 vim.diagnostic.config({
@@ -113,6 +102,10 @@ vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize +2<CR>", { desc = "Increa
 -- https://github.com/catppuccin/nvim
 -- ------------------------------------------------------------
 vim.pack.add({ "https://github.com/catppuccin/nvim" }, { confirm = false })
+
+require("catppuccin").setup({
+  transparent_background = true,
+})
 
 vim.cmd.colorscheme("catppuccin")
 

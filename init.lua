@@ -11,56 +11,56 @@
 -- ============================================================
 
 -- leader key harus di-set sebelum plugin dimuat
-vim.g.mapleader        = " "
-vim.g.maplocalleader   = " "
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
 -- >> Tampilan
-vim.opt.termguicolors  = true  -- true color support
-vim.opt.number         = true  -- nomor baris absolut
-vim.opt.relativenumber = true  -- nomor baris relatif (bantu navigasi hjkl)
-vim.opt.cursorline     = true  -- highlight baris aktif
-vim.opt.showmode       = false -- mode sudah tampil di statusline
-vim.opt.signcolumn     = "yes" -- kolom tanda (git, diagnostik) selalu tampil
-vim.opt.list           = true  -- tampilkan karakter whitespace
-vim.opt.listchars      = { tab = "» ", trail = "·", nbsp = "␣" }
-vim.opt.wrap           = true  -- bungkus baris yang melebihi lebar layar
+vim.opt.termguicolors = true -- true color support
+vim.opt.number = true -- nomor baris absolut
+vim.opt.relativenumber = true -- nomor baris relatif (bantu navigasi hjkl)
+vim.opt.cursorline = true -- highlight baris aktif
+vim.opt.showmode = false -- mode sudah tampil di statusline
+vim.opt.signcolumn = "yes" -- kolom tanda (git, diagnostik) selalu tampil
+vim.opt.list = true -- tampilkan karakter whitespace
+vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
+vim.opt.wrap = true -- bungkus baris yang melebihi lebar layar
 
 -- >> Perilaku editor
-vim.opt.mouse          = "a"        -- aktifkan mouse (resize split, klik dll)
-vim.opt.clipboard      = "unnamedplus" -- sinkron clipboard OS ↔ neovim
-vim.opt.breakindent    = true       -- indent ikut saat baris dibungkus
-vim.opt.undofile       = true       -- simpan riwayat undo antar sesi
-vim.opt.updatetime     = 250        -- delay sebelum CursorHold event (ms)
-vim.opt.timeoutlen     = 300        -- delay tunggu sequence keymap (ms)
-vim.opt.inccommand     = "split"    -- preview substitusi :%s secara live
+vim.opt.mouse = "a" -- aktifkan mouse (resize split, klik dll)
+vim.opt.clipboard = "unnamedplus" -- sinkron clipboard OS ↔ neovim
+vim.opt.breakindent = true -- indent ikut saat baris dibungkus
+vim.opt.undofile = true -- simpan riwayat undo antar sesi
+vim.opt.updatetime = 250 -- delay sebelum CursorHold event (ms)
+vim.opt.timeoutlen = 300 -- delay tunggu sequence keymap (ms)
+vim.opt.inccommand = "split" -- preview substitusi :%s secara live
 
 -- >> Split window
-vim.opt.splitright     = true -- split vertikal: panel baru ke kanan
-vim.opt.splitbelow     = true -- split horizontal: panel baru ke bawah
+vim.opt.splitright = true -- split vertikal: panel baru ke kanan
+vim.opt.splitbelow = true -- split horizontal: panel baru ke bawah
 
 -- >> Pencarian
-vim.opt.ignorecase     = true -- pencarian tidak case-sensitive...
-vim.opt.smartcase      = true -- ...kecuali ada huruf kapital
-vim.opt.hlsearch       = true -- highlight semua hasil pencarian
+vim.opt.ignorecase = true -- pencarian tidak case-sensitive...
+vim.opt.smartcase = true -- ...kecuali ada huruf kapital
+vim.opt.hlsearch = true -- highlight semua hasil pencarian
 
 -- >> Indentasi & formatting
-vim.opt.tabstop        = 2 -- lebar tampilan tab = 2 spasi
-vim.opt.shiftwidth     = 2 -- lebar indent (>> / <<) = 2 spasi
-vim.opt.expandtab      = true -- konversi tab → spasi otomatis
-vim.opt.textwidth      = 80 -- batas lebar teks (untuk gq dll)
+vim.opt.tabstop = 2 -- lebar tampilan tab = 2 spasi
+vim.opt.shiftwidth = 2 -- lebar indent (>> / <<) = 2 spasi
+vim.opt.expandtab = true -- konversi tab → spasi otomatis
+vim.opt.textwidth = 80 -- batas lebar teks (untuk gq dll)
 
 -- >> Diagnostik LSP
 -- ikon tiap severity membutuhkan nerd font di terminal
 vim.diagnostic.config({
-  virtual_text = true,
-  signs = {
-    text = {
-      [vim.diagnostic.severity.ERROR] = " ",
-      [vim.diagnostic.severity.WARN]  = " ",
-      [vim.diagnostic.severity.INFO]  = " ",
-      [vim.diagnostic.severity.HINT]  = " ",
-    },
-  },
+	virtual_text = true,
+	signs = {
+		text = {
+			[vim.diagnostic.severity.ERROR] = " ",
+			[vim.diagnostic.severity.WARN] = " ",
+			[vim.diagnostic.severity.INFO] = " ",
+			[vim.diagnostic.severity.HINT] = " ",
+		},
+	},
 })
 
 -- ============================================================
@@ -104,7 +104,7 @@ vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize +2<CR>", { desc = "Increa
 vim.pack.add({ "https://github.com/catppuccin/nvim" }, { confirm = false })
 
 require("catppuccin").setup({
-  transparent_background = true,
+	transparent_background = true,
 })
 
 vim.cmd.colorscheme("catppuccin")
@@ -120,9 +120,9 @@ vim.pack.add({ "https://github.com/Bekaboo/dropbar.nvim" }, { confirm = false })
 require("dropbar").setup()
 
 local dropbar = require("dropbar.api")
-vim.keymap.set("n", "<leader>.", dropbar.pick,                { desc = "Breadcrumb [.]pick" })
-vim.keymap.set("n", "[.", dropbar.goto_context_start,         { desc = "Breadcrumb [.]go to start" })
-vim.keymap.set("n", "].", dropbar.select_next_context,        { desc = "Breadcrumb [.]next context" })
+vim.keymap.set("n", "<leader>.", dropbar.pick, { desc = "Breadcrumb [.]pick" })
+vim.keymap.set("n", "[.", dropbar.goto_context_start, { desc = "Breadcrumb [.]go to start" })
+vim.keymap.set("n", "].", dropbar.select_next_context, { desc = "Breadcrumb [.]next context" })
 
 -- ------------------------------------------------------------
 -- Syntax highlight: nvim-treesitter
@@ -134,12 +134,12 @@ vim.keymap.set("n", "].", dropbar.select_next_context,        { desc = "Breadcru
 vim.pack.add({ "https://github.com/nvim-treesitter/nvim-treesitter" }, { confirm = false })
 
 require("nvim-treesitter").setup({
-  sync_install     = true,
-  modules          = {},
-  ignore_install   = {},
-  ensure_installed = { "lua", "c", "rust", "go" },
-  auto_install     = true, -- install parser otomatis saat buka filetype baru
-  highlight        = { enable = true },
+	sync_install = true,
+	modules = {},
+	ignore_install = {},
+	ensure_installed = { "lua", "c", "rust", "go" },
+	auto_install = true, -- install parser otomatis saat buka filetype baru
+	highlight = { enable = true },
 })
 
 -- ------------------------------------------------------------
@@ -147,27 +147,27 @@ require("nvim-treesitter").setup({
 -- https://github.com/saghen/blink.cmp
 -- Engine auto-completion dengan dukungan LSP, snippet, dan fuzzy.
 -- ------------------------------------------------------------
-vim.pack.add({ "https://github.com/saghen/blink.cmp" }, { confirm = false })
+vim.pack.add({ "https://github.com/saghen/blink.lib", "https://github.com/saghen/blink.cmp" })
 
 require("blink.cmp").setup({
-  completion = {
-    documentation = { auto_show = true },
-  },
-  fuzzy = { implementation = "lua" },
-  keymap = {
-    ["<C-n>"]     = { "select_next", "fallback_to_mappings" },
-    ["<C-p>"]     = { "select_prev", "fallback_to_mappings" },
-    ["<C-y>"]     = { "select_and_accept", "fallback" },
-    ["<C-e>"]     = { "cancel", "fallback" },
-    ["<Tab>"]     = { "snippet_forward", "select_next", "fallback" },
-    ["<S-Tab>"]   = { "snippet_backward", "select_prev", "fallback" },
-    ["<CR>"]      = { "select_and_accept", "fallback" },
-    ["<Esc>"]     = { "cancel", "hide_documentation", "fallback" },
-    ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
-    ["<C-b>"]     = { "scroll_documentation_up", "fallback" },
-    ["<C-f>"]     = { "scroll_documentation_down", "fallback" },
-    ["<C-k>"]     = { "show_signature", "hide_signature", "fallback" },
-  },
+	completion = {
+		documentation = { auto_show = true },
+	},
+	fuzzy = { implementation = "prefer_rust_with_warning" },
+	keymap = {
+		["<C-n>"] = { "select_next", "fallback_to_mappings" },
+		["<C-p>"] = { "select_prev", "fallback_to_mappings" },
+		["<C-y>"] = { "select_and_accept", "fallback" },
+		["<C-e>"] = { "cancel", "fallback" },
+		["<Tab>"] = { "snippet_forward", "select_next", "fallback" },
+		["<S-Tab>"] = { "snippet_backward", "select_prev", "fallback" },
+		["<CR>"] = { "select_and_accept", "fallback" },
+		["<Esc>"] = { "cancel", "hide_documentation", "fallback" },
+		["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
+		["<C-b>"] = { "scroll_documentation_up", "fallback" },
+		["<C-f>"] = { "scroll_documentation_down", "fallback" },
+		["<C-k>"] = { "show_signature", "hide_signature", "fallback" },
+	},
 })
 
 -- ------------------------------------------------------------
@@ -181,84 +181,92 @@ require("blink.cmp").setup({
 -- Lihat daftar server tersedia: :h lspconfig-all
 -- ------------------------------------------------------------
 vim.pack.add({
-  "https://github.com/neovim/nvim-lspconfig",
-  "https://github.com/mason-org/mason.nvim",
-  "https://github.com/mason-org/mason-lspconfig.nvim",
-  "https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim",
+	"https://github.com/neovim/nvim-lspconfig",
+	"https://github.com/mason-org/mason.nvim",
+	"https://github.com/mason-org/mason-lspconfig.nvim",
+	"https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim",
 }, { confirm = false })
 
 -- keymap LSP dipasang per-buffer saat server attach
 local function on_attach(_, bufnr)
-  local map  = vim.keymap.set
-  local opts = function(desc) return { buffer = bufnr, desc = desc } end
-  local fzf  = require("fzf-lua")
+	local map = vim.keymap.set
+	local opts = function(desc)
+		return { buffer = bufnr, desc = desc }
+	end
+	local fzf = require("fzf-lua")
 
-  -- navigasi kode (via fzf-lua untuk tampilan picker)
-  map("n", "gd", fzf.lsp_definitions, opts("LSP: [G]o to [D]efinition"))
-  map("n", "gD", fzf.lsp_declarations, opts("LSP: [G]o to [D]eclaration"))
-  map("n", "gr", fzf.lsp_references, opts("LSP: [G]o to [R]eferences"))
-  map("n", "gi", fzf.lsp_implementations, opts("LSP: [G]o to [I]mplementation"))
-  map("n", "gt", fzf.lsp_typedefs, opts("LSP: [G]o to [T]ype Definition"))
-  map("n", "K", vim.lsp.buf.hover, opts("LSP: Hover documentation"))
+	-- navigasi kode (via fzf-lua untuk tampilan picker)
+	map("n", "gd", fzf.lsp_definitions, opts("LSP: [G]o to [D]efinition"))
+	map("n", "gD", fzf.lsp_declarations, opts("LSP: [G]o to [D]eclaration"))
+	map("n", "gr", fzf.lsp_references, opts("LSP: [G]o to [R]eferences"))
+	map("n", "gi", fzf.lsp_implementations, opts("LSP: [G]o to [I]mplementation"))
+	map("n", "gt", fzf.lsp_typedefs, opts("LSP: [G]o to [T]ype Definition"))
+	map("n", "K", vim.lsp.buf.hover, opts("LSP: Hover documentation"))
 
-  -- aksi kode  (prefix <leader>c, terdaftar di which-key)
-  map("n", "<leader>cf", vim.lsp.buf.format, opts("LSP: [C]ode [F]ormat"))
-  map("n", "<leader>rn", vim.lsp.buf.rename, opts("LSP: [R]e[n]ame symbol"))
-  map("n", "<leader>ca", fzf.lsp_code_actions, opts("LSP: [C]ode [A]ction"))
-  map("n", "<leader>cs", fzf.lsp_document_symbols, opts("LSP: [C]ode [S]ymbols document"))
-  map("n", "<leader>cS", fzf.lsp_workspace_symbols, opts("LSP: [C]ode [S]ymbols workspace"))
-  map("n", "<leader>ci", fzf.lsp_incoming_calls, opts("LSP: [C]ode [I]ncoming calls"))
-  map("n", "<leader>co", fzf.lsp_outgoing_calls, opts("LSP: [C]ode [O]utgoing calls"))
+	-- aksi kode  (prefix <leader>c, terdaftar di which-key)
+	map("n", "<leader>cf", vim.lsp.buf.format, opts("LSP: [C]ode [F]ormat"))
+	map("n", "<leader>rn", vim.lsp.buf.rename, opts("LSP: [R]e[n]ame symbol"))
+	map("n", "<leader>ca", fzf.lsp_code_actions, opts("LSP: [C]ode [A]ction"))
+	map("n", "<leader>cs", fzf.lsp_document_symbols, opts("LSP: [C]ode [S]ymbols document"))
+	map("n", "<leader>cS", fzf.lsp_workspace_symbols, opts("LSP: [C]ode [S]ymbols workspace"))
+	map("n", "<leader>ci", fzf.lsp_incoming_calls, opts("LSP: [C]ode [I]ncoming calls"))
+	map("n", "<leader>co", fzf.lsp_outgoing_calls, opts("LSP: [C]ode [O]utgoing calls"))
 
-  -- diagnostik
-  map("n", "<leader>ld", fzf.diagnostics_document, opts("LSP: [L]ist [D]iagnostics (buffer)"))
-  map("n", "<leader>lD", fzf.diagnostics_workspace, opts("LSP: [L]ist [D]iagnostics (workspace)"))
-  map("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end, opts("LSP: Previous diagnostic"))
-  map("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end, opts("LSP: Next diagnostic"))
-  map("n", "[e", function() vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR }) end,
-    opts("LSP: Previous error"))
-  map("n", "]e", function() vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR }) end,
-    opts("LSP: Next error"))
+	-- diagnostik
+	map("n", "<leader>ld", fzf.diagnostics_document, opts("LSP: [L]ist [D]iagnostics (buffer)"))
+	map("n", "<leader>lD", fzf.diagnostics_workspace, opts("LSP: [L]ist [D]iagnostics (workspace)"))
+	map("n", "[d", function()
+		vim.diagnostic.jump({ count = -1 })
+	end, opts("LSP: Previous diagnostic"))
+	map("n", "]d", function()
+		vim.diagnostic.jump({ count = 1 })
+	end, opts("LSP: Next diagnostic"))
+	map("n", "[e", function()
+		vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR })
+	end, opts("LSP: Previous error"))
+	map("n", "]e", function()
+		vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR })
+	end, opts("LSP: Next error"))
 end
 
 -- tiap entry adalah vim.lsp.Config lengkap; cmd/filetypes/root_markers
 -- tidak perlu diulang jika sudah tersedia di default nvim-lspconfig
 local lsp_servers = {
-  lua_ls = {
-    -- referensi: https://luals.github.io/wiki/settings/
-    settings = {
-      Lua = { workspace = { library = vim.api.nvim_get_runtime_file("lua", true) } },
-    },
-  },
-  gopls = {
-    settings = {
-      gopls = {
-        gofumpt     = true,
-        staticcheck = true,
-        hints       = {
-          assignVariableTypes    = true,
-          compositeLiteralFields = true,
-          compositeLiteralTypes  = true,
-          constantValues         = true,
-          functionTypeParameters = true,
-          parameterNames         = true,
-          rangeVariableTypes     = true,
-        },
-      },
-    },
-  },
+	lua_ls = {
+		-- referensi: https://luals.github.io/wiki/settings/
+		settings = {
+			Lua = { workspace = { library = vim.api.nvim_get_runtime_file("lua", true) } },
+		},
+	},
+	gopls = {
+		settings = {
+			gopls = {
+				gofumpt = true,
+				staticcheck = true,
+				hints = {
+					assignVariableTypes = true,
+					compositeLiteralFields = true,
+					compositeLiteralTypes = true,
+					constantValues = true,
+					functionTypeParameters = true,
+					parameterNames = true,
+					rangeVariableTypes = true,
+				},
+			},
+		},
+	},
 }
 
 require("mason").setup()
 require("mason-lspconfig").setup()
 require("mason-tool-installer").setup({
-  ensure_installed = vim.tbl_keys(lsp_servers),
+	ensure_installed = vim.tbl_keys(lsp_servers),
 })
 
 for server, config in pairs(lsp_servers) do
-  config.on_attach = on_attach
-  vim.lsp.config(server, config)
-  vim.lsp.enable(server)
+	config.on_attach = on_attach
+	vim.lsp.config(server, config)
+	vim.lsp.enable(server)
 end
 
 -- ------------------------------------------------------------
@@ -268,10 +276,11 @@ end
 -- Butuh binary fzf terinstall di sistem (apt/brew: fzf)
 -- ------------------------------------------------------------
 vim.pack.add({
-  "https://github.com/nvim-tree/nvim-web-devicons", -- ikon (butuh nerd font)
-  "https://github.com/ibhagwan/fzf-lua",
+	"https://github.com/nvim-tree/nvim-web-devicons", -- ikon (butuh nerd font)
+	"https://github.com/ibhagwan/fzf-lua",
 }, { confirm = false })
 
+require("nvim-web-devicons").setup()
 require("fzf-lua").setup({})
 
 local fzf = require("fzf-lua")
@@ -290,16 +299,16 @@ vim.keymap.set("n", "<leader>fp", fzf.builtin, { desc = "[F]ind [P]ickers" })
 -- netrw dinonaktifkan agar tidak konflik dengan nvim-tree.
 -- Harus di-set SEBELUM plugin dimuat.
 -- ------------------------------------------------------------
-vim.g.loaded_netrw       = 1
+vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
 vim.pack.add({ { src = "https://github.com/nvim-tree/nvim-tree.lua" } })
 
 require("nvim-tree").setup({
-  view                = { adaptive_size = true }, -- lebar panel menyesuaikan isi
-  update_focused_file = { enable = true }, -- highlight file aktif di tree
-  sync_root_with_cwd  = true,             -- root tree ikuti cwd neovim
-  respect_buf_cwd     = true,
+	view = { side = "right", adaptive_size = true }, -- lebar panel menyesuaikan isi
+	update_focused_file = { enable = true }, -- highlight file aktif di tree
+	sync_root_with_cwd = true, -- root tree ikuti cwd neovim
+	respect_buf_cwd = true,
 })
 
 vim.keymap.set("n", "<leader>e", vim.cmd.NvimTreeToggle, { desc = "Toggle [E]xplorer" })
@@ -311,10 +320,10 @@ vim.keymap.set("n", "<leader>e", vim.cmd.NvimTreeToggle, { desc = "Toggle [E]xpl
 vim.pack.add({ "https://github.com/nvim-lualine/lualine.nvim" }, { confirm = false })
 
 require("lualine").setup({
-  options = {
-    section_separators   = { left = "", right = "" },
-    component_separators = { left = "", right = "" },
-  },
+	options = {
+		section_separators = { left = "", right = "" },
+		component_separators = { left = "", right = "" },
+	},
 })
 
 -- ------------------------------------------------------------
@@ -327,19 +336,19 @@ require("lualine").setup({
 vim.pack.add({ { src = "https://github.com/stevearc/conform.nvim" } })
 
 require("conform").setup({
-  format_on_save = {
-    timeout_ms = 500,
-    lsp_format = "fallback",
-  },
-  formatters_by_ft = {
-    lua        = { "stylua" },
-    json       = { "jq" },
-    rust       = { "rustfmt" },
-    python     = { "black" },
-    go         = { "goimports", "gofumpt" },
-    html       = { "prettier" },
-    javascript = { "prettier" },
-  },
+	format_on_save = {
+		timeout_ms = 500,
+		lsp_format = "fallback",
+	},
+	formatters_by_ft = {
+		lua = { "stylua" },
+		json = { "jq" },
+		rust = { "rustfmt" },
+		python = { "black" },
+		go = { "goimports", "gofumpt" },
+		html = { "prettier" },
+		javascript = { "prettier" },
+	},
 })
 
 -- ------------------------------------------------------------
@@ -350,7 +359,7 @@ require("conform").setup({
 vim.pack.add({ { src = "https://github.com/lewis6991/gitsigns.nvim" } })
 
 require("gitsigns").setup({
-  current_line_blame = true,
+	current_line_blame = true,
 })
 
 -- ------------------------------------------------------------
@@ -365,19 +374,19 @@ require("gitsigns").setup({
 vim.pack.add({ { src = "https://github.com/akinsho/toggleterm.nvim" } })
 
 require("toggleterm").setup({
-  open_mapping      = [[<c-\>]],
-  insert_mappings   = true, -- <C-\> aktif di insert mode
-  terminal_mappings = true, -- <C-\> aktif dari dalam terminal
-  autochdir         = true, -- terminal mengikuti cwd neovim
-  hide_numbers      = true,
-  start_in_insert   = true,
-  direction         = "horizontal",
-  size              = 15, -- tinggi terminal (baris) untuk mode horizontal
-  close_on_exit     = true,
-  float_opts        = {
-    border   = "curved",
-    winblend = 3,
-  },
+	open_mapping = [[<c-\>]],
+	insert_mappings = true, -- <C-\> aktif di insert mode
+	terminal_mappings = true, -- <C-\> aktif dari dalam terminal
+	autochdir = true, -- terminal mengikuti cwd neovim
+	hide_numbers = true,
+	start_in_insert = true,
+	direction = "horizontal",
+	size = 15, -- tinggi terminal (baris) untuk mode horizontal
+	close_on_exit = true,
+	float_opts = {
+		border = "curved",
+		winblend = 3,
+	},
 })
 
 -- navigasi dari dalam terminal ke window lain tanpa keluar neovim
@@ -396,11 +405,11 @@ vim.keymap.set("t", "<C-l>", [[<Cmd>wincmd l<CR>]], { desc = "Move to right wind
 vim.pack.add({ "https://github.com/folke/which-key.nvim" }, { confirm = false })
 
 require("which-key").setup({
-  spec = {
-    { "<leader>f", group = "[F]ind" },
-    { "<leader>w", group = "[W]indow" },
-    { "<leader>c", group = "[C]ode" },
-  },
+	spec = {
+		{ "<leader>f", group = "[F]ind" },
+		{ "<leader>w", group = "[W]indow" },
+		{ "<leader>c", group = "[C]ode" },
+	},
 })
 
 -- autopairs: tutup bracket/quote otomatis saat mengetik
@@ -409,8 +418,8 @@ require("which-key").setup({
 -- todo-comments: highlight komentar TODO / FIXME / NOTE / WARN / BUG / HACK
 -- https://github.com/folke/todo-comments.nvim
 vim.pack.add({
-  "https://github.com/windwp/nvim-autopairs",
-  "https://github.com/folke/todo-comments.nvim",
+	"https://github.com/windwp/nvim-autopairs",
+	"https://github.com/folke/todo-comments.nvim",
 }, { confirm = false })
 
 require("nvim-autopairs").setup()

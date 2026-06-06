@@ -153,7 +153,7 @@ require("blink.cmp").setup({
 	completion = {
 		documentation = { auto_show = true },
 	},
-	fuzzy = { implementation = "prefer_rust_with_warning" },
+	fuzzy = { implementation = "prefer_rust" },
 	keymap = {
 		["<C-n>"] = { "select_next", "fallback_to_mappings" },
 		["<C-p>"] = { "select_prev", "fallback_to_mappings" },

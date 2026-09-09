@@ -10,11 +10,11 @@
 -- OPTIONS
 -- ============================================================
 
--- leader key harus di-set sebelum plugin dimuat
+-- Leader key harus di-set sebelum plugin dimuat
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
--- >> Tampilan
+-- | Tampilan
 vim.opt.termguicolors = true -- true color support
 vim.opt.number = true -- nomor baris absolut
 vim.opt.relativenumber = true -- nomor baris relatif (bantu navigasi hjkl)
@@ -22,10 +22,10 @@ vim.opt.cursorline = true -- highlight baris aktif
 vim.opt.showmode = false -- mode sudah tampil di statusline
 vim.opt.signcolumn = "yes" -- kolom tanda (git, diagnostik) selalu tampil
 vim.opt.list = true -- tampilkan karakter whitespace
--- vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
+vim.opt.listchars = { tab = "│ ", trail = "·", nbsp = "␣" }
 vim.opt.wrap = true -- bungkus baris yang melebihi lebar layar
 
--- >> Perilaku editor
+-- | Perilaku editor
 vim.opt.mouse = "a" -- aktifkan mouse (resize split, klik dll)
 vim.opt.clipboard = "unnamedplus" -- sinkron clipboard OS ↔ neovim
 vim.opt.breakindent = true -- indent ikut saat baris dibungkus
@@ -34,22 +34,23 @@ vim.opt.updatetime = 250 -- delay sebelum CursorHold event (ms)
 vim.opt.timeoutlen = 300 -- delay tunggu sequence keymap (ms)
 vim.opt.inccommand = "split" -- preview substitusi :%s secara live
 
--- >> Split window
+-- | Split window
 vim.opt.splitright = true -- split vertikal: panel baru ke kanan
 vim.opt.splitbelow = true -- split horizontal: panel baru ke bawah
 
--- >> Pencarian
+-- | Pencarian
 vim.opt.ignorecase = true -- pencarian tidak case-sensitive...
 vim.opt.smartcase = true -- ...kecuali ada huruf kapital
 vim.opt.hlsearch = true -- highlight semua hasil pencarian
 
--- >> Indentasi & formatting
-vim.opt.tabstop = 2 -- lebar tampilan tab = 2 spasi
-vim.opt.shiftwidth = 2 -- lebar indent (>> / <<) = 2 spasi
-vim.opt.expandtab = true -- konversi tab → spasi otomatis
-vim.opt.textwidth = 80 -- batas lebar teks (untuk gq dll)
+-- | Indentasi & formatting
+vim.opt.tabstop = 4 -- lebar tampilan tab = 4 spasi (pas, tidak mepet & tidak terlalu lebar)
+vim.opt.shiftwidth = 4 -- jumlah spasi per level indentasi
+vim.opt.softtabstop = 4 -- jumlah spasi saat tekan Tab/Backspace
+vim.opt.autoindent = true -- ikuti indentasi baris sebelumnya secara otomatis
+vim.opt.smartindent = true -- indentasi pintar untuk blok kode baru
 
--- >> Diagnostik LSP
+-- | Diagnostik LSP
 -- ikon tiap severity membutuhkan nerd font di terminal
 vim.diagnostic.config({
 	virtual_text = true,
@@ -68,7 +69,7 @@ vim.diagnostic.config({
 -- ============================================================
 -- Catatan: keymap khusus plugin didefinisikan di blok plugin masing-masing.
 
--- >> General
+-- | General
 vim.keymap.set({ "n", "x", "o" }, "<leader>y", '"+y', { desc = "Copy to clipboard" })
 vim.keymap.set({ "n", "x", "o" }, "<leader>p", '"+p', { desc = "Paste clipboard text" })
 
@@ -76,21 +77,21 @@ vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highl
 vim.keymap.set("i", "jk", "<Esc>", { desc = "Exit insert mode" })
 vim.keymap.set({ "n", "v" }, ";", ":", { desc = "Command mode (no Shift)" })
 
--- >> Window: navigasi antar panel
+-- | Window: navigasi antar panel
 -- konsisten dengan keymap terminal mode di blok toggleterm
 vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
 vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move to bottom window" })
 vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Move to top window" })
 vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Move to right window" })
 
--- >> Window: split & tutup  (prefix <leader>w, terdaftar di which-key)
+-- | Window: split & tutup (prefix <leader>w, terdaftar di which-key)
 vim.keymap.set("n", "<leader>wv", "<C-w>v", { desc = "[W]indow split [V]ertical" })
 vim.keymap.set("n", "<leader>ws", "<C-w>s", { desc = "[W]indow [S]plit horizontal" })
 vim.keymap.set("n", "<leader>wc", "<C-w>c", { desc = "[W]indow [C]lose" })
 vim.keymap.set("n", "<leader>wo", "<C-w>o", { desc = "[W]indow [O]nly (close others)" })
 vim.keymap.set("n", "<leader>w=", "<C-w>=", { desc = "[W]indow equalize size" })
 
--- >> Window: resize  (Ctrl + tombol panah)
+-- | Window: resize (Ctrl + tombol panah)
 vim.keymap.set("n", "<C-Up>", "<cmd>resize +2<CR>", { desc = "Increase window height" })
 vim.keymap.set("n", "<C-Down>", "<cmd>resize -2<CR>", { desc = "Decrease window height" })
 vim.keymap.set("n", "<C-Left>", "<cmd>vertical resize -2<CR>", { desc = "Decrease window width" })
@@ -101,15 +102,10 @@ vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize +2<CR>", { desc = "Increa
 -- ============================================================
 
 -- ------------------------------------------------------------
--- Colorscheme: catppuccin
--- https://github.com/catppuccin/nvim
+-- Colorscheme: nightfox.nvim (carbonfox)
+-- https://github.com/EdenEast/nightfox.nvim
 -- ------------------------------------------------------------
 vim.pack.add({ "https://github.com/EdenEast/nightfox.nvim" }, { confirm = false })
-
--- require("catppuccin").setup({
--- transparent_background = true,
--- })
-
 vim.cmd.colorscheme("carbonfox")
 
 -- ------------------------------------------------------------
@@ -146,6 +142,31 @@ require("nvim-treesitter").setup({
 })
 
 -- ------------------------------------------------------------
+-- Fuzzy finder: fzf-lua
+-- https://github.com/ibhagwan/fzf-lua
+-- Pencarian file, buffer, teks, help, dll. Prefix: <leader>f
+-- Dimuat sebelum LSP agar handler on_attach aman menggunakan fzf-lua.
+-- Butuh binary fzf terinstall di sistem (apt/brew: fzf)
+-- ------------------------------------------------------------
+vim.pack.add({
+	"https://github.com/nvim-tree/nvim-web-devicons", -- ikon (butuh nerd font)
+	"https://github.com/ibhagwan/fzf-lua",
+}, { confirm = false })
+
+require("nvim-web-devicons").setup()
+require("fzf-lua").setup({})
+
+local fzf = require("fzf-lua")
+vim.keymap.set("n", "<leader>ff", fzf.files, { desc = "[F]ind [F]iles" })
+vim.keymap.set("n", "<leader>fg", fzf.live_grep, { desc = "[F]ind by [G]rep" })
+vim.keymap.set("n", "<leader>fw", fzf.grep_cword, { desc = "[F]ind current [W]ord" })
+vim.keymap.set("n", "<leader>fb", fzf.buffers, { desc = "[F]ind [B]uffers" })
+vim.keymap.set("n", "<leader>fr", fzf.resume, { desc = "[F]ind [R]esume" })
+vim.keymap.set("n", "<leader>fh", fzf.help_tags, { desc = "[F]ind [H]elp" })
+vim.keymap.set("n", "<leader>fm", fzf.man_pages, { desc = "[F]ind [M]anuals" })
+vim.keymap.set("n", "<leader>fp", fzf.builtin, { desc = "[F]ind [P]ickers" })
+
+-- ------------------------------------------------------------
 -- Completion: blink.cmp
 -- https://github.com/saghen/blink.cmp
 -- Engine auto-completion dengan dukungan LSP, snippet, dan fuzzy.
@@ -168,7 +189,9 @@ require("blink.cmp").setup({
 		["<C-e>"] = { "cancel", "fallback" },
 		["<Tab>"] = { "snippet_forward", "select_next", "fallback" },
 		["<S-Tab>"] = { "snippet_backward", "select_prev", "fallback" },
-		["<CR>"] = { "select_and_accept", "fallback" },
+		-- Gunakan "accept" (bukan "select_and_accept") agar <CR> hanya menerima item
+		-- yang secara eksplisit dipilih, mencegah ketidaksengajaan saat tekan Enter.
+		["<CR>"] = { "accept", "fallback" },
 		["<Esc>"] = { "cancel", "hide_documentation", "fallback" },
 		["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
 		["<C-b>"] = { "scroll_documentation_up", "fallback" },
@@ -182,7 +205,7 @@ require("blink.cmp").setup({
 -- https://github.com/neovim/nvim-lspconfig
 -- https://github.com/mason-org/mason.nvim
 --
--- Mason mengelola instalasi LSP server secara otomatis.
+-- Mason mengelola instalasi LSP server & tool eksternal secara otomatis.
 -- Untuk menambah server baru: tambahkan ke tabel lsp_servers.
 -- Cek server aktif: :checkhealth vim.lsp
 -- Lihat daftar server tersedia: :h lspconfig-all
@@ -200,7 +223,6 @@ local function on_attach(_, bufnr)
 	local opts = function(desc)
 		return { buffer = bufnr, desc = desc }
 	end
-	local fzf = require("fzf-lua")
 
 	-- navigasi kode (via fzf-lua untuk tampilan picker)
 	map("n", "gd", fzf.lsp_definitions, opts("LSP: [G]o to [D]efinition"))
@@ -210,7 +232,7 @@ local function on_attach(_, bufnr)
 	map("n", "gt", fzf.lsp_typedefs, opts("LSP: [G]o to [T]ype Definition"))
 	map("n", "K", vim.lsp.buf.hover, opts("LSP: Hover documentation"))
 
-	-- aksi kode  (prefix <leader>c, terdaftar di which-key)
+	-- aksi kode (prefix <leader>c, terdaftar di which-key)
 	map("n", "<leader>cf", vim.lsp.buf.format, opts("LSP: [C]ode [F]ormat"))
 	map("n", "<leader>rn", vim.lsp.buf.rename, opts("LSP: [R]e[n]ame symbol"))
 	map("n", "<leader>ca", fzf.lsp_code_actions, opts("LSP: [C]ode [A]ction"))
@@ -236,69 +258,28 @@ local function on_attach(_, bufnr)
 	end, opts("LSP: Next error"))
 end
 
--- tiap entry adalah vim.lsp.Config lengkap; cmd/filetypes/root_markers
--- tidak perlu diulang jika sudah tersedia di default nvim-lspconfig
-local lsp_servers = {
-	lua_ls = {
-		-- referensi: https://luals.github.io/wiki/settings/
-		settings = {
-			Lua = { workspace = { library = vim.api.nvim_get_runtime_file("lua", true) } },
-		},
-	},
-	gopls = {
-		settings = {
-			gopls = {
-				gofumpt = true,
-				staticcheck = true,
-				hints = {
-					assignVariableTypes = true,
-					compositeLiteralFields = true,
-					compositeLiteralTypes = true,
-					constantValues = true,
-					functionTypeParameters = true,
-					parameterNames = true,
-					rangeVariableTypes = true,
-				},
-			},
-		},
-	},
-}
+-- Daftar LSP server yang digunakan (menggunakan konfigurasi default bawaan)
+local lsp_servers = { "lua_ls", "gopls" }
+
+-- Formatter eksternal yang dipastikan otomatis terinstall via Mason
+local formatters_to_install = { "stylua", "jq", "black", "goimports", "gofumpt", "prettier" }
 
 require("mason").setup()
 require("mason-lspconfig").setup()
+
+-- Install LSP server & formatter eksternal secara otomatis
+local ensure_tools = vim.list_extend(vim.deepcopy(lsp_servers), formatters_to_install)
+
 require("mason-tool-installer").setup({
-	ensure_installed = vim.tbl_keys(lsp_servers),
+	ensure_installed = ensure_tools,
 })
 
-for server, config in pairs(lsp_servers) do
-	config.on_attach = on_attach
-	vim.lsp.config(server, config)
+for _, server in ipairs(lsp_servers) do
+	vim.lsp.config(server, {
+		on_attach = on_attach,
+	})
 	vim.lsp.enable(server)
 end
-
--- ------------------------------------------------------------
--- Fuzzy finder: fzf-lua
--- https://github.com/ibhagwan/fzf-lua
--- Pencarian file, buffer, teks, help, dll. Prefix: <leader>f
--- Butuh binary fzf terinstall di sistem (apt/brew: fzf)
--- ------------------------------------------------------------
-vim.pack.add({
-	"https://github.com/nvim-tree/nvim-web-devicons", -- ikon (butuh nerd font)
-	"https://github.com/ibhagwan/fzf-lua",
-}, { confirm = false })
-
-require("nvim-web-devicons").setup()
-require("fzf-lua").setup({})
-
-local fzf = require("fzf-lua")
-vim.keymap.set("n", "<leader>ff", fzf.files, { desc = "[F]ind [F]iles" })
-vim.keymap.set("n", "<leader>fg", fzf.live_grep, { desc = "[F]ind by [G]rep" })
-vim.keymap.set("n", "<leader>fw", fzf.grep_cword, { desc = "[F]ind current [W]ord" })
-vim.keymap.set("n", "<leader>fb", fzf.buffers, { desc = "[F]ind [B]uffers" })
-vim.keymap.set("n", "<leader>fr", fzf.resume, { desc = "[F]ind [R]esume" })
-vim.keymap.set("n", "<leader>fh", fzf.help_tags, { desc = "[F]ind [H]elp" })
-vim.keymap.set("n", "<leader>fm", fzf.man_pages, { desc = "[F]ind [M]anuals" })
-vim.keymap.set("n", "<leader>fp", fzf.builtin, { desc = "[F]ind [P]ickers" })
 
 -- ------------------------------------------------------------
 -- File explorer: nvim-tree
@@ -315,7 +296,7 @@ require("nvim-tree").setup({
 	view = { side = "right", adaptive_size = true }, -- lebar panel menyesuaikan isi
 	update_focused_file = { enable = true }, -- highlight file aktif di tree
 	sync_root_with_cwd = true, -- root tree ikuti cwd neovim
-	respect_buf_cwd = true,
+	respect_buf_cwd = false, -- hindari konflik pergantian cwd otomatis saat switch buffer
 })
 
 vim.keymap.set("n", "<leader>e", vim.cmd.NvimTreeToggle, { desc = "Toggle [E]xplorer" })
@@ -326,6 +307,7 @@ vim.keymap.set("n", "<leader>e", vim.cmd.NvimTreeToggle, { desc = "Toggle [E]xpl
 -- ------------------------------------------------------------
 vim.pack.add({ "https://github.com/nvim-lualine/lualine.nvim" }, { confirm = false })
 
+---@diagnostic disable-next-line: undefined-field
 require("lualine").setup({
 	options = {
 		section_separators = { left = "", right = "" },
@@ -338,7 +320,7 @@ require("lualine").setup({
 -- https://github.com/stevearc/conform.nvim
 -- Format otomatis saat simpan file. Fallback ke LSP jika
 -- formatter eksternal tidak tersedia.
--- Tambah formatter: pastikan binary-nya terinstall di sistem.
+-- Tools dikelola dan diinstall otomatis oleh mason-tool-installer.
 -- ------------------------------------------------------------
 vim.pack.add({ { src = "https://github.com/stevearc/conform.nvim" } })
 
@@ -397,8 +379,8 @@ require("toggleterm").setup({
 	},
 })
 
--- navigasi dari dalam terminal ke window lain tanpa keluar neovim
-vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], { desc = "Exit terminal mode" })
+-- Navigasi dari dalam terminal ke window lain tanpa mengganggu tombol <Esc> di CLI app
+vim.keymap.set("t", "<C-x>", [[<C-\><C-n>]], { desc = "Exit terminal mode to Normal mode" })
 vim.keymap.set("t", "<C-h>", [[<Cmd>wincmd h<CR>]], { desc = "Move to left window" })
 vim.keymap.set("t", "<C-j>", [[<Cmd>wincmd j<CR>]], { desc = "Move to bottom window" })
 vim.keymap.set("t", "<C-k>", [[<Cmd>wincmd k<CR>]], { desc = "Move to top window" })

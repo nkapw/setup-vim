@@ -22,7 +22,7 @@ vim.opt.cursorline = true -- highlight baris aktif
 vim.opt.showmode = false -- mode sudah tampil di statusline
 vim.opt.signcolumn = "yes" -- kolom tanda (git, diagnostik) selalu tampil
 vim.opt.list = true -- tampilkan karakter whitespace
-vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
+-- vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 vim.opt.wrap = true -- bungkus baris yang melebihi lebar layar
 
 -- >> Perilaku editor
@@ -69,6 +69,9 @@ vim.diagnostic.config({
 -- Catatan: keymap khusus plugin didefinisikan di blok plugin masing-masing.
 
 -- >> General
+vim.keymap.set({ "n", "x", "o" }, "<leader>y", '"+y', { desc = "Copy to clipboard" })
+vim.keymap.set({ "n", "x", "o" }, "<leader>p", '"+p', { desc = "Paste clipboard text" })
+
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 vim.keymap.set("i", "jk", "<Esc>", { desc = "Exit insert mode" })
 vim.keymap.set({ "n", "v" }, ";", ":", { desc = "Command mode (no Shift)" })
@@ -101,13 +104,13 @@ vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize +2<CR>", { desc = "Increa
 -- Colorscheme: catppuccin
 -- https://github.com/catppuccin/nvim
 -- ------------------------------------------------------------
-vim.pack.add({ "https://github.com/catppuccin/nvim" }, { confirm = false })
+vim.pack.add({ "https://github.com/EdenEast/nightfox.nvim" }, { confirm = false })
 
-require("catppuccin").setup({
-	transparent_background = true,
-})
+-- require("catppuccin").setup({
+-- transparent_background = true,
+-- })
 
-vim.cmd.colorscheme("catppuccin")
+vim.cmd.colorscheme("carbonfox")
 
 -- ------------------------------------------------------------
 -- Breadcrumbs: dropbar.nvim
@@ -384,7 +387,8 @@ require("toggleterm").setup({
 	autochdir = true, -- terminal mengikuti cwd neovim
 	hide_numbers = true,
 	start_in_insert = true,
-	direction = "horizontal",
+	direction = "float",
+	-- direction = "horizontal",
 	size = 15, -- tinggi terminal (baris) untuk mode horizontal
 	close_on_exit = true,
 	float_opts = {
@@ -413,6 +417,7 @@ require("which-key").setup({
 		{ "<leader>f", group = "[F]ind" },
 		{ "<leader>w", group = "[W]indow" },
 		{ "<leader>c", group = "[C]ode" },
+		{ "<leader>x", group = "[X] Trouble / Diagnostics" },
 	},
 })
 
@@ -428,5 +433,56 @@ vim.pack.add({
 
 require("nvim-autopairs").setup()
 require("todo-comments").setup()
+
+-- ------------------------------------------------------------
+-- Indent guide: indent-blankline.nvim
+-- https://github.com/lukas-reineke/indent-blankline.nvim
+-- Visualisasi level indentasi dan scope blok kode.
+-- ------------------------------------------------------------
+vim.pack.add({ "https://github.com/lukas-reineke/indent-blankline.nvim" }, { confirm = false })
+
+require("ibl").setup()
+
+-- ------------------------------------------------------------
+-- Diagnostic & symbol panel: trouble.nvim
+-- https://github.com/folke/trouble.nvim
+-- Panel terstruktur untuk error, warning, simbol, dan LSP ref.
+-- ------------------------------------------------------------
+vim.pack.add({ "https://github.com/folke/trouble.nvim" }, { confirm = false })
+
+require("trouble").setup({})
+
+vim.keymap.set("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Diagnostics (Trouble)" })
+vim.keymap.set(
+	"n",
+	"<leader>xX",
+	"<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+	{ desc = "Buffer Diagnostics (Trouble)" }
+)
+vim.keymap.set("n", "<leader>xs", "<cmd>Trouble symbols toggle focus=false<cr>", { desc = "Symbols (Trouble)" })
+vim.keymap.set(
+	"n",
+	"<leader>xl",
+	"<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+	{ desc = "LSP Defs/Refs (Trouble)" }
+)
+vim.keymap.set("n", "<leader>xL", "<cmd>Trouble loclist toggle<cr>", { desc = "Location List (Trouble)" })
+vim.keymap.set("n", "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", { desc = "Quickfix List (Trouble)" })
+
+-- ------------------------------------------------------------
+-- Sticky context header: nvim-treesitter-context
+-- https://github.com/nvim-treesitter/nvim-treesitter-context
+-- Menampilkan baris konteks fungsi/class saat scrolling panjang.
+-- ------------------------------------------------------------
+vim.pack.add({ "https://github.com/nvim-treesitter/nvim-treesitter-context" }, { confirm = false })
+
+require("treesitter-context").setup({
+	max_lines = 3, -- batas maksimal baris sticky header
+	trim_scope = "outer",
+})
+
+vim.keymap.set("n", "[c", function()
+	require("treesitter-context").go_to_context(vim.v.count1)
+end, { desc = "Jump to context (sticky header)" })
 
 -- vim.pack.update() -- hapus komentar untuk update semua plugin sekaligus

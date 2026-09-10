@@ -72,6 +72,7 @@ vim.diagnostic.config({
 -- | General
 vim.keymap.set({ "n", "x", "o" }, "<leader>y", '"+y', { desc = "Copy to clipboard" })
 vim.keymap.set({ "n", "x", "o" }, "<leader>p", '"+p', { desc = "Paste clipboard text" })
+vim.keymap.set("n", "<leader>bd", "<cmd>bdelete<cr>", { desc = "[B]uffer [D]elete" })
 
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 vim.keymap.set("i", "jk", "<Esc>", { desc = "Exit insert mode" })
@@ -274,9 +275,12 @@ require("mason-tool-installer").setup({
 	ensure_installed = ensure_tools,
 })
 
+local capabilities = require("blink.cmp").get_lsp_capabilities()
+
 for _, server in ipairs(lsp_servers) do
 	vim.lsp.config(server, {
 		on_attach = on_attach,
+		capabilities = capabilities,
 	})
 	vim.lsp.enable(server)
 end
@@ -349,16 +353,70 @@ vim.pack.add({ { src = "https://github.com/lewis6991/gitsigns.nvim" } })
 
 require("gitsigns").setup({
 	current_line_blame = true,
+	on_attach = function(bufnr)
+		local gs = package.loaded.gitsigns
+
+		local function map(mode, l, r, opts)
+			opts = opts or {}
+			opts.buffer = bufnr
+			vim.keymap.set(mode, l, r, opts)
+		end
+
+		-- Navigasi git hunk
+		map("n", "]h", function()
+			if vim.wo.diff then
+				return "]h"
+			end
+			vim.schedule(function()
+				gs.next_hunk()
+			end)
+			return "<Ignore>"
+		end, { expr = true, desc = "Next git hunk" })
+
+		map("n", "[h", function()
+			if vim.wo.diff then
+				return "[h"
+			end
+			vim.schedule(function()
+				gs.prev_hunk()
+			end)
+			return "<Ignore>"
+		end, { expr = true, desc = "Previous git hunk" })
+
+		-- Aksi git hunk
+		map("n", "<leader>hp", gs.preview_hunk, { desc = "[H]unk [P]review" })
+		map("n", "<leader>hs", gs.stage_hunk, { desc = "[H]unk [S]tage" })
+		map("n", "<leader>hr", gs.reset_hunk, { desc = "[H]unk [R]eset" })
+		map("v", "<leader>hs", function()
+			gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
+		end, { desc = "[H]unk [S]tage selected" })
+		map("v", "<leader>hr", function()
+			gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+		end, { desc = "[H]unk [R]eset selected" })
+	end,
 })
+
+-- ------------------------------------------------------------
+-- Git diff: diffview.nvim
+-- https://github.com/sindrets/diffview.nvim
+-- Visualisasi diff git, penyelesaian konflik, dan riwayat komit/file.
+-- ------------------------------------------------------------
+vim.pack.add({ { src = "https://github.com/sindrets/diffview.nvim" } })
+
+require("diffview").setup({})
+
+vim.keymap.set("n", "<leader>gd", "<cmd>DiffviewOpen<cr>", { desc = "[G]it [D]iffview open" })
+vim.keymap.set("n", "<leader>gc", "<cmd>DiffviewClose<cr>", { desc = "[G]it diffview [C]lose" })
+vim.keymap.set("n", "<leader>gh", "<cmd>DiffviewFileHistory %<cr>", { desc = "[G]it current file [H]istory" })
+vim.keymap.set("n", "<leader>gH", "<cmd>DiffviewFileHistory<cr>", { desc = "[G]it project file [H]istory" })
 
 -- ------------------------------------------------------------
 -- Terminal: toggleterm.nvim
 -- https://github.com/akinsho/toggleterm.nvim
 --
--- Buka/tutup : <C-\>  (aktif di normal, insert, dan terminal mode)
--- Multi terminal: ketik nomor sebelum <C-\>  → misal 2<C-\> = terminal #2
--- Ganti direction: :ToggleTerm direction=float|vertical|horizontal
--- Lihat semua terminal aktif: :TermSelect
+-- Buka/tutup : <C-\> atau <leader>tf (float), <leader>th (horizontal), <leader>tv (vertical)
+-- LazyGit    : <leader>gg (buka lazygit di floating terminal)
+-- Multi term : ketik nomor sebelum <C-\>  → misal 2<C-\> = terminal #2
 -- ------------------------------------------------------------
 vim.pack.add({ { src = "https://github.com/akinsho/toggleterm.nvim" } })
 
@@ -369,15 +427,48 @@ require("toggleterm").setup({
 	autochdir = true, -- terminal mengikuti cwd neovim
 	hide_numbers = true,
 	start_in_insert = true,
-	direction = "float",
-	-- direction = "horizontal",
-	size = 15, -- tinggi terminal (baris) untuk mode horizontal
+	direction = "horizontal",
+	size = function(term)
+		if term.direction == "horizontal" then
+			return 15
+		elseif term.direction == "vertical" then
+			return math.floor(vim.o.columns * 0.4)
+		end
+	end,
 	close_on_exit = true,
 	float_opts = {
 		border = "curved",
 		winblend = 3,
 	},
 })
+
+-- Keymap pintas layout terminal
+vim.keymap.set("n", "<leader>tf", "<cmd>ToggleTerm direction=float<cr>", { desc = "[T]erminal [F]loat" })
+vim.keymap.set(
+	"n",
+	"<leader>th",
+	"<cmd>ToggleTerm direction=horizontal<cr>",
+	{ desc = "[T]erminal [H]orizontal split" }
+)
+vim.keymap.set("n", "<leader>tv", "<cmd>ToggleTerm direction=vertical<cr>", { desc = "[T]erminal [V]ertical split" })
+
+-- Keymap pintas multi-session terminal
+vim.keymap.set("n", "<leader>ts", "<cmd>TermSelect<cr>", { desc = "[T]erminal [S]elect session" })
+vim.keymap.set("n", "<leader>tn", "<cmd>ToggleTermSetName<cr>", { desc = "[T]erminal [N]ame session" })
+vim.keymap.set("n", "<leader>t1", "<cmd>1ToggleTerm<cr>", { desc = "[T]erminal #1" })
+vim.keymap.set("n", "<leader>t2", "<cmd>2ToggleTerm<cr>", { desc = "[T]erminal #2" })
+vim.keymap.set("n", "<leader>t3", "<cmd>3ToggleTerm<cr>", { desc = "[T]erminal #3" })
+vim.keymap.set("n", "<leader>t4", "<cmd>4ToggleTerm<cr>", { desc = "[T]erminal #4" })
+
+-- Terminal kustom: LazyGit integration
+local Terminal = require("toggleterm.terminal").Terminal
+local lazygit = Terminal:new({ cmd = "lazygit", hidden = true, direction = "float" })
+
+local function toggle_lazygit()
+	lazygit:toggle()
+end
+
+vim.keymap.set("n", "<leader>gg", toggle_lazygit, { desc = "[G]it [G]it UI (lazygit)" })
 
 -- Navigasi dari dalam terminal ke window lain tanpa mengganggu tombol <Esc> di CLI app
 vim.keymap.set("t", "<C-x>", [[<C-\><C-n>]], { desc = "Exit terminal mode to Normal mode" })
@@ -398,8 +489,12 @@ require("which-key").setup({
 	spec = {
 		{ "<leader>f", group = "[F]ind" },
 		{ "<leader>w", group = "[W]indow" },
+		{ "<leader>b", group = "[B]uffer" },
 		{ "<leader>c", group = "[C]ode" },
 		{ "<leader>x", group = "[X] Trouble / Diagnostics" },
+		{ "<leader>g", group = "[G]it" },
+		{ "<leader>h", group = "[H]unk (Git)" },
+		{ "<leader>t", group = "[T]erminal" },
 	},
 })
 
